@@ -32,23 +32,28 @@ ifeq ($(HOST),haiku)
 	INSTALLBIN=/boot/common/games/asylum/asylum
 	INSTALLRESOURCEPATH=/boot/common/games/asylum/data
 	INSTALLHISCORES=/boot/common/games/asylum/hiscores
-	OS_SOURCE=asylum_haiku.c
+	OBJ=.obj
 	LIBS=-lSDL_mixer -lSDL -lbe -lroot -ldevice -lgame -lGL -ltextencoding -lmedia
+	OS_SOURCE=asylum_haiku.$(OBJ)
 endif
 ifeq ($(HOST),mingw)
 	INSTALLBIN="c:/program files/asylum/asylum.exe"
 	INSTALLRESOURCEPATH="c:/program files/asylum/data"
 	INSTALLHISCORES="c:/program files/asylum/hiscores"
-	OS_SOURCE=asylum_win.c
 	RM=del
 	EXE=.exe
+	OBJ=.o
 	LIBS=-lm -lmingw32 -lSDL_mixer -lSDLmain -lSDL -mwindows
+	OS_SOURCE=asylum_win.$(OBJ)
 endif
 ifeq ($(HOST),generic)
 	INSTALLBIN=/usr/games/asylum
 	INSTALLRESOURCEPATH=/usr/share/games/asylum
 	INSTALLHISCORES=/var/games/asylum
+	OBJ=.o
 endif
+
+OBJS=alien$(OBJ) asylum$(OBJ) bullet$(OBJ) file$(OBJ) keyboard$(OBJ) maze$(OBJ) menus$(OBJ) player$(OBJ) projectile$(OBJ) sound$(OBJ) vdu$(OBJ)
 
 default: build
 
@@ -94,9 +99,12 @@ oggs:
 
 build: asylum$(EXE)
 
-asylum$(EXE): $(SRCS) $(OS_SOURCE) asylum.h Makefile
-	$(CC) $(COPTS) $(LDFLAGS) -o asylum$(EXE) $(SRCS) $(OS_SOURCE) $(LIBS)
+%$(OBJ): %.c asylum.h
+	$(CC) -c -o $@ $(COPTS) $<
+
+asylum$(EXE): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 clean:
-	$(RM) asylum$(EXE)
+	$(RM) asylum$(EXE) $(OBJS)
 
