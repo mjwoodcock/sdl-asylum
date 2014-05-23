@@ -442,8 +442,6 @@ void wipesoundtab()
 void screensave()
 {
     plotscore();
-//oscli("Mount");
-//oscli("Screensave Screenfile");
 }
 
 void c_array_initializers()
