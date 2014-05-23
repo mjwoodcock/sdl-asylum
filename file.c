@@ -179,14 +179,12 @@ int loadfile(char** spaceptr, char* r1, char* path)
     int r4;
     char fullname[240] = "";
 
-    snprintf(fullname, sizeof(fullname), "%s%s", r1, path);
+    snprintf(fullname, sizeof(fullname), "%s%s", path, r1);
     r4 = get_file_length(fullname);
 
     // hack: +4 as feof doesn't trigger until we've passed the end
     *spaceptr = (char*)malloc(r4+4);
 
-    strcat(fullname, path);
-    strcat(fullname, r1);
     if (r4 == -1)
     {
         filenotthere(); return 1;
