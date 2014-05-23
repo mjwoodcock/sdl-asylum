@@ -310,17 +310,6 @@ int filelength(const char* name, const char* path)
     return r4;
 }
 
-void swi_osgbpb(int op, FILE* f, char* start, char* end, int b)
-{
-    switch (op)
-    {
-    case 3: for (char* i = start; (i < end) && !feof(f); i++) *i = fgetc(f);
-        break;
-    case 1: for (char* i = start; (i < end) && !feof(f); i++) fputc(*i, f);
-        break;
-    }
-}
-
 static int write_file(const char* path, char* start, char* end)
 {
 	FILE *f;

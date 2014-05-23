@@ -501,7 +501,6 @@ int osbyte_81(int c);
 char swi_oscrc(int w, char* start, char* end, int bytes);
 FILE* find_game(int op);
 FILE* find_config(int op);
-void swi_osgbpb(int n, FILE* f, char* start, char* end, int b);
 int swi_joystick_read(int a, int* x, int* y);
 void swi_blitz_wait(int d);
 void swi_blitz_screenflush();

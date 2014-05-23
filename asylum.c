@@ -651,8 +651,6 @@ void loadconfig()
     FILE* r0 = find_config(0x40); // read access
     if (r0 != NULL)
     {
-        //swi_osgbpb(3, /* read bytes from pointer R4 */
-        //r0,&savestart,&saveend,0);
         while (fscanf(r0, " %12s", keyword) != EOF)
         {
             int i;
@@ -697,8 +695,6 @@ void saveconfig()
 {
     FILE* r0 = find_config(0x80); // create file with read/write access
     if (r0 == NULL) return;
-//swi_osgbpb(1, /* write bytes to pointer R4 */
-//r0,&savestart,&saveend,0);
     fprintf(r0, "%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %c%c%c\n%s",
             config_keywords[0], -options.leftkey,
             config_keywords[1], -options.rightkey,
