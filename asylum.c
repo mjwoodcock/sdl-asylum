@@ -20,6 +20,7 @@
 
 #include "asylum_os.h"
 #include "asylum.h"
+#include "keyboard.h"
 
 #define _firstzone 0
 
@@ -71,7 +72,7 @@ void init()
     if (cheatpermit == 2)  abort_game();
     for ( ; ; )
     {
-        osbyte_7c();
+        clear_esc_key();
         if (options_menu(0)) // not in game
         {
             abort_game(); return;
@@ -105,7 +106,7 @@ int abort_game()
 {
     swi_bodgemusic_stop();
     losehandlers();
-    osbyte_7c();
+    clear_esc_key();
     SDL_Quit();
     exit(0);
 }

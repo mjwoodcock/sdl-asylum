@@ -17,10 +17,12 @@
 
 #include <SDL/SDL.h>
 
-#include "asylum.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <math.h>
+
+#include "asylum.h"
+#include "keyboard.h"
 
 extern fastspr_sprite charsadr[48];
 extern fastspr_sprite blockadr[256];
@@ -74,7 +76,6 @@ textinfo texttabofs[_textno];
 
 void switchbank()
 {
-    //osbyte_71();
     //swi_blitz_screenretrieve();
     if (vduvar.opengl) SDL_GL_SwapBuffers();
     else SDL_Flip(ArcScreen);
@@ -549,10 +550,12 @@ void clearkeybuf()
 {
     do
 		;
-    while (osbyte_79(0) != -1);
+    while (read_key() != -1);
+	// FIXME: I scan_for_key calls read_key, so the second "while" is
+	// not necessary, I think
     do
 		;
-    while (osbyte_81(1) != -1);
+    while (scan_for_key(1) != -1);
 }
 
 void showlives(int lives)

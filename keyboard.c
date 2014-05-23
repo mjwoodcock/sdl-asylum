@@ -46,17 +46,15 @@ int readmousestate()
     return mouse;
 }
 
-int osbyte_79(int c)
+int read_key()
 {
     update_keyboard();
     int key = keybuf;
     keybuf = -1;
     return key;
-    //for (int i=0;i<512;i++) if (keyboard[i]) {/*printf("Returning %i\n",i);*/ return i;}
-    return -1;
 }
 
-int osbyte_79_unicode(int c)
+int read_key_unicode()
 {
     update_keyboard();
     int uni = unibuf;
@@ -64,18 +62,27 @@ int osbyte_79_unicode(int c)
     return uni;
 }
 
-int osbyte_7a()
+int read_key_greater_than_15()
 {
-    update_keyboard(); for (int i = 0; i < 512; i++) if (keyboard[i]) return i;return -1;
+    int retval;
+
+    update_keyboard();
+    if (keybuf < 16)
+        retval = -1;
+    else
+        retval = keybuf;
+    keybuf = -1;
+    return retval;
 }
-void osbyte_7c()
+
+void clear_esc_key()
 {
     keyboard[ESC_VALUE] = 0;
 }
 
-int osbyte_81(int c)
+int scan_for_key(int c)
 {
-    if (c >= 0) return osbyte_79(c);
+    if (c >= 0) return read_key();
     update_keyboard();
     return keyboard[-c];
 }
@@ -145,7 +152,7 @@ void update_keyboard()
 
 void zonecheatread(int* zone)
 {
-    char r1 = osbyte_79_unicode(0); // was _81(0)
+    char r1 = read_key_unicode();
 
     if ((r1 < 48) || (r1 > 56)) return;
     *zone = r1-48;
@@ -153,10 +160,10 @@ void zonecheatread(int* zone)
 
 void cheatread()
 {
-    if (osbyte_81(-282) == 0xff) getmpmg();
-    if (osbyte_81(-283) == 0xff) getrocket();
-    if (osbyte_81(-285) == 0xff) screensave();
-    if (osbyte_81(-284) == 0xff) prepstrength();
+    if (scan_for_key(-282) == 0xff) getmpmg();
+    if (scan_for_key(-283) == 0xff) getrocket();
+    if (scan_for_key(-285) == 0xff) screensave();
+    if (scan_for_key(-284) == 0xff) prepstrength();
 }
 
 
@@ -195,19 +202,19 @@ void keyread(key_state* ks)
    BICNE R4,R4,#4; up on fire button 2
  */
     }
-    if ((osbyte_81(options.leftkey) == 0xff) || !(r4&1)) 
+    if ((scan_for_key(options.leftkey) == 0xff) || !(r4&1)) 
       { if (++ks->leftpress == 0) ks->leftpress = 0xff;}
     else ks->leftpress = 0;
-    if ((osbyte_81(options.rightkey) == 0xff) || !(r4&2))
+    if ((scan_for_key(options.rightkey) == 0xff) || !(r4&2))
       { if (++ks->rightpress == 0) ks->rightpress = 0xff;}
     else ks->rightpress = 0;
-    if ((osbyte_81(options.upkey) == 0xff) || !(r4&4))
+    if ((scan_for_key(options.upkey) == 0xff) || !(r4&4))
       { if (++ks->uppress == 0) ks->uppress = 0xff; }
     else ks->uppress = 0;
-    if ((osbyte_81(options.downkey) == 0xff) || !(r4&8))
+    if ((scan_for_key(options.downkey) == 0xff) || !(r4&8))
       { if (++ks->downpress == 0) ks->downpress = 0xff; }
     else ks->downpress = 0;
-    if ((osbyte_81(options.firekey) == 0xff) || !(r4&16))
+    if ((scan_for_key(options.firekey) == 0xff) || !(r4&16))
       { if (++ks->fire == 0) ks->fire = 0xff; }
     else ks->fire = 0;
     if (ks->leftpress || ks->rightpress

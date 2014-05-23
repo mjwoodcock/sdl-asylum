@@ -18,6 +18,7 @@
 #include <SDL/SDL.h>
 
 #include "asylum.h"
+#include "keyboard.h"
 
 extern fastspr_sprite charsadr[48];
 
@@ -41,7 +42,7 @@ int escapehandler()
     message(40, 168+256, 0, -4, "R    - Return to Game");
     message(40, 200+256, 0, -4, "O    - Alter Options");
     showtext();
-    osbyte_7c(); //clear escape
+    clear_esc_key();
     for (int r9 = 64; swi_readescapestate() == 0;)
     {
         swi_blitz_wait(0);
@@ -57,7 +58,7 @@ int escapehandler()
             showchatscreen();
             showtext();
         }
-        switch (osbyte_79_unicode(1))
+        switch (read_key_unicode())
         {
             case 'q': case 'Q':
                 loselife();
@@ -70,7 +71,7 @@ int escapehandler()
                 return 0;
         }
     }
-    osbyte_7c();
+    clear_esc_key();
     return 1;
 }
 
@@ -464,7 +465,7 @@ int selectkey(int x, int y, int xv, int yv, const char* a)
         }
         swi_blitz_wait(1);
     }
-    while ((r1 = osbyte_79(0)) == -1); // scan keyboard
+    while ((r1 = read_key()) == -1); // scan keyboard
     if (swi_readescapestate()) return 0;
     return -r1;                        // and r4 (?)
 }
@@ -481,15 +482,15 @@ int readopt(int maxopt)
 // MOVVS R0,#0
 //if (r0&(1<<16)) {/*optfire:*/ return 0;}
         }
-        r1 = osbyte_79_unicode(1); // read key in time limit
+        r1 = read_key_unicode();
         if (swi_readescapestate())
         {
-            osbyte_7c(); // clear escape
+            clear_esc_key();
             return -1;
         }
         if (r1 >= '0' && r1 <= '0' + maxopt)
             return r1 - '0';
-        if (osbyte_81(options.firekey) == 0xff)
+        if (scan_for_key(options.firekey) == 0xff)
             return 0;
         if (need_redraw())
         {
@@ -542,18 +543,18 @@ int prelude()
             showchatscreen();
             showtext();
         }
-        int r1 = osbyte_7a();
+        int r1 = read_key_greater_than_15();
         if ((r1 != -1) && (r1 != 307) && (r1 != 308)) // escape
             return cheatpermit;
         if (readmousestate()&2)
         {
-            if (osbyte_81(-SDLK_LALT) != 0xff) return cheatpermit;
-            if (osbyte_81(-SDLK_RALT) != 0xff && osbyte_81(-SDLK_MODE) != 0xff) return cheatpermit;
+            if (scan_for_key(-SDLK_LALT) != 0xff) return cheatpermit;
+            if (scan_for_key(-SDLK_RALT) != 0xff && scan_for_key(-SDLK_MODE) != 0xff) return cheatpermit;
             cheatpermit = 1;
             scroll = 1024;
         }
     }
-    osbyte_7c();
+    clear_esc_key();
     return 2;
 }
 
@@ -646,8 +647,8 @@ void showerrorok()
 
 int errorwait()
 {
-    if (osbyte_81(-74) != 0xff)
-        while (osbyte_81(-61) != 0xff)
+    if (scan_for_key(-74) != 0xff)
+        while (scan_for_key(-61) != 0xff)
             if (swi_readescapestate())
             {
                 wipetexttab(); return 0;
@@ -714,7 +715,7 @@ void updatehst()
         for (int i = 0; i < 3; i++) r10[i] = options.initials[i];
         for (int r8 = 3; r8 > 0; r8--, r10++)
         {
-            while (osbyte_81(0) != -options.firekey)
+            while (scan_for_key(0) != -options.firekey)
             {
                 keyread(&ks);
                 if (ks.leftpress == 0)
