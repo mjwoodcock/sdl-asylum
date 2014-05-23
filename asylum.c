@@ -341,7 +341,7 @@ void checkifarm3()
 
 int checkifextend()
 {
-    return (NULL != find_game(FIND_GAME_READ_ONLY));
+    return (NULL != find_game(FIND_DATA_READ_ONLY));
 }
 
 
@@ -648,7 +648,7 @@ void loadconfig()
 {
     char keyword[12];
 
-    FILE* r0 = find_config(0x40); // read access
+    FILE* r0 = find_config(FIND_DATA_READ_ONLY); // read access
     if (r0 != NULL)
     {
         while (fscanf(r0, " %12s", keyword) != EOF)
@@ -693,7 +693,7 @@ void loadconfig()
 
 void saveconfig()
 {
-    FILE* r0 = find_config(0x80); // create file with read/write access
+    FILE* r0 = find_config(FIND_DATA_READ_WRITE); // create file with read/write access
     if (r0 == NULL) return;
     fprintf(r0, "%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %c%c%c\n%s",
             config_keywords[0], -options.leftkey,
@@ -719,7 +719,7 @@ void saveconfig()
 
 void loadgame()
 {
-    FILE* r0 = find_game(FIND_GAME_READ_ONLY);
+    FILE* r0 = find_game(FIND_DATA_READ_ONLY);
     if (r0 == NULL) /* XXX failing silently is bad */ return;
     //uint8_t dimensions[8];
     fread(&options.mentalzone, 1, 1, r0);
@@ -749,7 +749,7 @@ void loadgame()
 
 void savegame()
 {
-    FILE* r0 = find_game(FIND_GAME_READ_WRITE);
+    FILE* r0 = find_game(FIND_DATA_READ_WRITE);
     if (r0 == NULL) /* XXX failing silently is bad */ return;
     //uint8_t dimensions[8];
     fwrite(&options.mentalzone, 1, 1, r0);
@@ -774,7 +774,7 @@ void savegame()
 
 void permitid()
 {
-    FILE* r0 = find_config(0xc0);
+    FILE* r0 = find_config(FIND_DATA_APPEND);
     if (r0 != NULL)
     {
         fprintf(r0, "%s", idpermitstring);

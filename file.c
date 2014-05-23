@@ -60,10 +60,10 @@ FILE* find_game(int op)
     strcat(fullname, savegamename);
     switch (op)
     {
-    case FIND_GAME_READ_ONLY:
-	return fopen(fullname, "rb");
-    case FIND_GAME_READ_WRITE:
-	return fopen(fullname, "wb");
+    case FIND_DATA_READ_ONLY:
+        return fopen(fullname, "rb");
+    case FIND_DATA_READ_WRITE:
+        return fopen(fullname, "wb");
     default:
 	return NULL;
     }
@@ -81,10 +81,14 @@ FILE* find_config(int op)
     strcat(fullname, configname);
     switch (op)
     {
-    case 0x40: return fopen(fullname, "rb");
-    case 0x80: return fopen(fullname, "wb");
-    case 0xc0: return fopen(fullname, "ab");
-    default: return NULL;
+    case FIND_DATA_READ_ONLY:
+        return fopen(fullname, "rb");
+    case FIND_DATA_READ_WRITE:
+        return fopen(fullname, "wb");
+    case FIND_DATA_APPEND:
+        return fopen(fullname, "ab");
+    default:
+        return NULL;
     }
 }
 
