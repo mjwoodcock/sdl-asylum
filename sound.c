@@ -52,7 +52,6 @@ void soundclaimmaybe(int r0, char r1, char r2, int r3, int r4, int r5, char r6, 
 void soundclaimexplo(int r0, char r1, char r2, int r3, int r4, int r5, char r6, int r7, Mix_Chunk* chunk)
 {
 //soundtab=soundtabofs+(r0<<soundtabshift);
-   bidforexplo:
     if ((!Mix_Playing(3)) || (Mix_GetChunk(3)->volume < r2)) soundclaim(3, r1, r2, r3, r4, r5, r6, r7, chunk);
     else if ((!Mix_Playing(4)) || (Mix_GetChunk(4)->volume < r2)) soundclaim(4, r1, r2, r3, r4, r5, r6, r7, chunk);
     else if ((!Mix_Playing(5)) || (Mix_GetChunk(5)->volume < r2)) soundclaim(5, r1, r2, r3, r4, r5, r6, r7, chunk);

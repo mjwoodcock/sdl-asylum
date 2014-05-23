@@ -299,7 +299,6 @@ int filelength(char* name, char* path)
     {
         filesyserror(); return 0;
     }
-//if (r0!=1) {fileerror: return -1;}
     return r4;
 }
 

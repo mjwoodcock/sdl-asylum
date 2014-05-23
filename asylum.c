@@ -71,7 +71,6 @@ void init()
     if (cheatpermit == 2)  abort_game();
     for ( ; ; )
     {
-       playloop:
         osbyte_7c();
         if (options_menu(0)) // not in game
         {
@@ -80,7 +79,7 @@ void init()
 	currentzone = 0;
         if (getlevelfiles())
         {
-            notgotlevel: if (1) abort_game();
+            if (1) abort_game();
             // or, depending on what getlevelfiles() returned
             continue;
         }
@@ -89,7 +88,6 @@ void init()
         if (game()) continue;
         if (gotallneurons())
         {
-           zonedone:
             if (options.idpermit != 1) permitid();
             swi_bodgemusic_start(1, 0); // ?? (3,0) in original
         }
@@ -128,7 +126,6 @@ int game()
         else  restartplayer();
         do
         {
-           mainrestart:
             showgamescreen();
             if (options.soundtype == 2) swi_bodgemusic_start((plzone != 0), 0);
             swi_bodgemusic_volume(options.musicvol);
@@ -137,10 +134,9 @@ int game()
             swi_blitz_wait(1);
             while (!swi_readescapestate())
             {
-                mainloop:
                 if (plzone != currentzone)
                 {
-                    switchzone: loadzone(); goto zonerestart;
+                    loadzone(); goto zonerestart;
                 }
 //BL saveal
 //BL restoreal
@@ -157,7 +153,6 @@ int game()
                     alfire();
                     wakeupal(xpos, ypos);
                 }
-               rate50link:
                 plmove();
                 bonuscheck();
                 fuelairproc();
@@ -189,7 +184,6 @@ int game()
                     rate50 = 1;
                 }
                 else if (frameinc > 1) rate50 = 0;
-               rateskip:
 
                 framectr += frameinc;
 
@@ -236,7 +230,6 @@ void restoreal(uint8_t store[30+78*28])
     if (restore_player(store)) return;
     wipealtab();
     restore_alents(store+30);
-   restored:;
 }
 
 void bonus1()
@@ -336,7 +329,6 @@ void soundupdate()
    SWI "XSound_Enable"
    LDMFD R13!,{PC}
  */
-// buf:
 
 void checkifarm3()
 {
@@ -440,10 +432,9 @@ void wipesoundtab()
 {
 //r10=&soundtabofs; temporarily undefined
     for (int r3 = _soundentlen*8; r3 > 0; r3 -= sizeof(int))
-       loop51:;
+		;
         //*(r10++)=0;
     for (int r0 = 7; r0 >= 0; r0--)
-       soundkillloop:
         swi_stasis_volslide(r0, 0xfc00, 0);
 }
 
@@ -553,13 +544,10 @@ void getgamefiles()
 {
     char *gamescreenadr, *blokeadr_load, *exploadr_load;
 
-   load1:
     loadhammered_game(&gamescreenadr, gamescreenpath, resourcepath);
     initialize_gamescreen(gamescreenadr);
-   load2:
     int blokelen = loadhammered_game(&blokeadr_load, blokepath, resourcepath);
     initialize_sprites(blokeadr_load, blokeadr, 77, blokeadr_load+blokelen);
-   load3:
     int explolen = loadhammered_game(&exploadr_load, explopath, resourcepath);
     initialize_sprites(exploadr_load, exploadr, 32, exploadr_load+explolen);
 }
@@ -574,11 +562,9 @@ void getlevelsprites()
     case 4: currentpath = psychepath /*XXX*/; break;
     default: currentpath = egopath;
     }
-   load4:
     int blocklen = loadhammered_level(&blockadr_load, blockpath, currentpath);
     initialize_sprites(blockadr_load, blockadr, 256, blockadr_load+blocklen);
 
-   load5:
     int alienlen = loadhammered_level(&alienadr_load, alienpath, currentpath);
     initialize_sprites(alienadr_load, alspradr, 256, alienadr_load+alienlen);
 }
@@ -595,7 +581,6 @@ int getlevelfiles()
     }
     getlevelsprites();
 
-   load6:
     loadhammered_level((char**)&brainadr, boardpath, currentpath);
     boardadr = brainadr;
 // hack: fix endianness
@@ -628,7 +613,6 @@ int retrievebackdrop()
 {
     char* r9 = currentpath;
 
-   load10:
     loadhammered_level(&backadr, backpath, currentpath);
     return 0;
 }
@@ -637,16 +621,13 @@ int getneuronfiles(int plzone)
 {
 
 //STR R10,[R12,#backadr]
-   load8:
     loadhammered_level(&backadr, neuronbackpath, currentpath);
     while (1)
     {
-       neuronloadloop:
         *neuronnumber = '0'+plzone;
         if (filelength(neuronpath, currentpath)) break;
-        if (--plzone == 0) noneuronshere: return 0;
+        if (--plzone == 0) return 0;
     }
-   load9:
     loadhammered_level((char**)&neuronadr, neuronpath, currentpath);
     boardadr = neuronadr;
 // hack: fix endianness
@@ -708,7 +689,6 @@ void loadconfig()
         }
         fclose(r0);
     }
-   findoutid:;
     if (!options.idpermit) if (options.mentalzone > 2) options.mentalzone = 2;
     //int idp=swi_osfile(5,options.idpermitpath,NULL,NULL);
     //options.idpermit=(idp==1)?1:0;
