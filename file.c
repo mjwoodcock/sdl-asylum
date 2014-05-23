@@ -22,6 +22,11 @@
 
 #include "asylum.h"
 
+static int read_file(const char* path, char* start, char* end);
+static int write_file(const char* path, char* start, char* end);
+static int get_file_length(const char* path);
+static int does_file_exist(const char* path);
+
 #define STOREAREALEN (16*0x40000)
 
 char storage[STOREAREALEN];
@@ -140,10 +145,10 @@ int loadvitalfile(char** spaceptr, char* r1, char* path)
 
     strcat(fullname, path);
     strcat(fullname, r1);
-    int r4 = swi_osfile(15, fullname, 0, 0);
+    int r4 = get_file_length(fullname);
     if (r4 <= 0) fatalfile();
     *spaceptr = (char*)malloc(r4);
-    if (swi_osfile(14, fullname, *spaceptr, 0)) fatalfile();
+    if (read_file(fullname, *spaceptr, (*spaceptr) + r4)) fatalfile();
     return r4;
 }
 
@@ -171,8 +176,12 @@ int loadhammered(char** spaceptr, char* r1, char* path)
 
 int loadfile(char** spaceptr, char* r1, char* path)
 {
-    int r4 = filelength(r1, path);
+    int r4;
     char fullname[240] = "";
+
+    snprintf(fullname, sizeof(fullname), "%s%s", r1, path);
+    r4 = get_file_length(fullname);
+
     // hack: +4 as feof doesn't trigger until we've passed the end
     *spaceptr = (char*)malloc(r4+4);
 
@@ -186,7 +195,7 @@ int loadfile(char** spaceptr, char* r1, char* path)
     {
         nomemory(); return 1;
     }
-    if (swi_osfile(14, fullname, *spaceptr, 0))
+    if (read_file(fullname, *spaceptr, (*spaceptr) + r4 + 4))
     {
         filesyserror(); return 1;
     }
@@ -288,13 +297,12 @@ void loadscores(char* highscorearea, int mentalzone)
     setdefaultscores();
 }
 
-int filelength(char* name, char* path)
+int filelength(const char* name, const char* path)
 {
     char fullname[240] = "";
 
-    strcat(fullname, path);
-    strcat(fullname, name);
-    int r4 = swi_osfile(15, fullname, NULL, NULL);
+    snprintf(fullname, sizeof(fullname), "%s%s", path, name);
+    int r4 = get_file_length(fullname);
     if (r4 == -1)
     {
         filesyserror(); return 0;
@@ -313,39 +321,48 @@ void swi_osgbpb(int op, FILE* f, char* start, char* end, int b)
     }
 }
 
-int swi_osfile(int op, const char* name, char* start, char* end)
+static int write_file(const char* path, char* start, char* end)
 {
-    FILE* f;
-    int x;
+	FILE *f;
 
-    //printf("Looking for %s\n",name);
-    switch (op)
-    {
-    case 10: // save file
-        f = fopen(name, "wb");
-        for (char* i = start; i < end; i++) fputc(*i, f);
-        fclose(f);
-        return 0;
-    case 5: // test file existence
-        f = fopen(name, "rb");
-        if (f == NULL) return 0;
-        fclose(f);
-        return 1;
-    case 15: // file length
-        f = fopen(name, "rb");
-        if (f == NULL) return -1;
-        fseek(f, 0, SEEK_END);
-        x = ftell(f);
-        fclose(f);
-        return x;
-    case 0xff:
-    case 14: // load file
-        f = fopen(name, "rb");
-        if (f == NULL) return -1;
-        for (char* i = start; !feof(f); i++) *i = fgetc(f);
-        fclose(f);
-        return 0;
-    }
+	f = fopen(path, "wb");
+	for (char* i = start; i < end; i++) fputc(*i, f);
+	fclose(f);
+	return 0;
+}
+
+static int does_file_exist(const char* path)
+{
+	FILE *f;
+
+	f = fopen(path, "rb");
+	if (f == NULL) return 0;
+	fclose(f);
+	return 1;
+}
+
+static int get_file_length(const char* path)
+{
+	FILE *f;
+	int x;
+
+	f = fopen(path, "rb");
+	if (f == NULL) return -1;
+	fseek(f, 0, SEEK_END);
+	x = ftell(f);
+	fclose(f);
+	return x;
+}
+
+static int read_file(const char* path, char* start, char* end)
+{
+	FILE *f;
+
+	f = fopen(path, "rb");
+	if (f == NULL) return -1;
+	for (char* i = start; i < end && !feof(f); i++) *i = fgetc(f);
+	fclose(f);
+	return 0;
 }
 
 int swi_blitz_hammerop(int op, char* name, char* path, char* space)

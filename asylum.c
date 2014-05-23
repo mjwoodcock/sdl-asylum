@@ -690,7 +690,6 @@ void loadconfig()
         fclose(r0);
     }
     if (!options.idpermit) if (options.mentalzone > 2) options.mentalzone = 2;
-    //int idp=swi_osfile(5,options.idpermitpath,NULL,NULL);
     //options.idpermit=(idp==1)?1:0;
 }
 
@@ -779,8 +778,6 @@ void savegame()
 
 void permitid()
 {
-    //swi_osfile(10,options.idpermitpath,idpermitstring,idpermitstring+40);
-
     FILE* r0 = find_config(0xc0);
     if (r0 != NULL)
     {
