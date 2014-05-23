@@ -20,6 +20,7 @@
 
 #include "asylum_os.h"
 #include "asylum.h"
+#include "file.h"
 #include "keyboard.h"
 
 #define _firstzone 0
@@ -340,7 +341,7 @@ void checkifarm3()
 
 int checkifextend()
 {
-    return (NULL != find_game(0x40));
+    return (NULL != find_game(FIND_GAME_READ_ONLY));
 }
 
 
@@ -718,7 +719,7 @@ void saveconfig()
 
 void loadgame()
 {
-    FILE* r0 = find_game(0x40);
+    FILE* r0 = find_game(FIND_GAME_READ_ONLY);
     if (r0 == NULL) /* XXX failing silently is bad */ return;
     //uint8_t dimensions[8];
     fread(&options.mentalzone, 1, 1, r0);
@@ -748,7 +749,7 @@ void loadgame()
 
 void savegame()
 {
-    FILE* r0 = find_game(0x80);
+    FILE* r0 = find_game(FIND_GAME_READ_WRITE);
     if (r0 == NULL) /* XXX failing silently is bad */ return;
     //uint8_t dimensions[8];
     fwrite(&options.mentalzone, 1, 1, r0);
