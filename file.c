@@ -86,8 +86,16 @@ FILE* find_config(int op)
 void dropprivs()
 {
 #ifndef _WIN32
-    setregid(getgid(), getgid());
-    setreuid(getuid(), getuid());
+    if (setregid(getgid(), getgid()) != 0)
+    {
+        fprintf(stderr, "setregid failed\n");
+        exit(1);
+    }
+    if (setreuid(getuid(), getuid()) != 0)
+    {
+        fprintf(stderr, "setreuid failed\n");
+        exit(1);
+    }
 #endif
 }
 
