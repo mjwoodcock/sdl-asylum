@@ -24,9 +24,7 @@
 #include "file.h"
 
 static int read_file(const char* path, char* start, char* end);
-static int write_file(const char* path, char* start, char* end);
 static int get_file_length(const char* path);
-static int does_file_exist(const char* path);
 
 static char resource_path[PATH_MAX];
 static char score_path[PATH_MAX];
@@ -277,26 +275,6 @@ int filelength(const char* name, const char* path)
         filesyserror(); return 0;
     }
     return r4;
-}
-
-static int write_file(const char* path, char* start, char* end)
-{
-    FILE *f;
-
-    f = fopen(path, "wb");
-    for (char* i = start; i < end; i++) fputc(*i, f);
-    fclose(f);
-    return 0;
-}
-
-static int does_file_exist(const char* path)
-{
-    FILE *f;
-
-    f = fopen(path, "rb");
-    if (f == NULL) return 0;
-    fclose(f);
-    return 1;
 }
 
 static int get_file_length(const char* path)
