@@ -476,7 +476,7 @@ void decomp(fastspr_sprite* DecompScreen, char* r11);
 void losehandlers();
 void initrockettab();
 void initialize_music(int a);
-void swi_bodgemusic_start(int a, int b);
+void swi_bodgemusic_start(int a);
 void swi_bodgemusic_stop();
 void swi_bodgemusic_volume(int v);
 void swi_bodgemusic_load(int a, char* b);

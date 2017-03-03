@@ -350,7 +350,7 @@ void maketestsound(int r1)
     swi_sound_control(1, 0x100|r1, 0x20, 0xfe);
     //swi_bodgemusic_volume(musicvol);
 }
-void swi_bodgemusic_start(int a, int b)
+void swi_bodgemusic_start(int a)
 {
     if (!sound_available) return;
     swi_bodgemusic_stop();

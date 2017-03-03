@@ -318,7 +318,7 @@ void tunevolume()
 {
     showchatscreen();
     wipetexttab();
-    if (sound_available && (options.soundtype == 2)) swi_bodgemusic_start(1, 0);
+    if (sound_available && (options.soundtype == 2)) swi_bodgemusic_start(1);
     swi_bodgemusic_volume(options.musicvol);
     message(80, 32, 0, 0, "Change volume");
     message(48, 96, 0, 0, "1. Louder effects");

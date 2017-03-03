@@ -87,11 +87,11 @@ void init()
         if (gotallneurons())
         {
             if (options.idpermit != 1) permitid();
-            if (options.soundtype == 2) swi_bodgemusic_start(1, 0); // ?? (3,0) in original
+            if (options.soundtype == 2) swi_bodgemusic_start(1); // ?? (3,0) in original
         }
         else                            // was "else if overflow clear"
         {
-            if (options.soundtype == 2) swi_bodgemusic_start(2, 0);
+            if (options.soundtype == 2) swi_bodgemusic_start(2);
             swi_sound_qtempo(0x980);
             swi_bodgemusic_volume(options.musicvol);
         }
@@ -125,7 +125,7 @@ int game()
         do
         {
             showgamescreen();
-            if (options.soundtype == 2) swi_bodgemusic_start((plzone != 0), 0);
+            if (options.soundtype == 2) swi_bodgemusic_start((plzone != 0));
             swi_bodgemusic_volume(options.musicvol);
             frameinc = 1;
             rate50 = 1;
@@ -432,7 +432,7 @@ int getfiles()
     showloading();
     init_sounds();
     getmusicfiles();
-    swi_bodgemusic_start(1, 0);
+    swi_bodgemusic_start(1);
     getgamefiles();
     return 0;
 }
