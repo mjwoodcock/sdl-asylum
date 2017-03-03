@@ -28,17 +28,10 @@ static int write_file(const char* path, char* start, char* end);
 static int get_file_length(const char* path);
 static int does_file_exist(const char* path);
 
-#define STOREAREALEN (16*0x40000)
-
-char storage[STOREAREALEN];
-#define storageend (storage+STOREAREALEN)
-
-//const char idpermitpath[]="<PsychoResource$Path>Idpermit";
-
 static char resource_path[240];
 static char score_path[240];
 
-char configname[] = "/.asylum"; //"<PsychoResource$Path>Config";
+char configname[] = "/.asylum";
 char savegamename[] = "/.asylum_game";
 
 static const char* score_name[4] = {
