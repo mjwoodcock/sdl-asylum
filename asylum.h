@@ -98,7 +98,8 @@ typedef struct board { int first_int; int width; int height;
 typedef struct alent
 {
     int type; int x; int y; int dx;
-    int dy; int r5; int r6;
+    int dy; int r5;
+    int hitpoints;
     // transient flags for colcheck
     char colchecktype; char downpress; char falling; char pluphit;
     char lefthit; char righthit; char uphit; char downhit;

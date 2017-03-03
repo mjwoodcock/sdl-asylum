@@ -253,7 +253,7 @@ void alientestplat(alent* r11, char* r5)
 
 void decoration(alent* r11)
 {
-    if (--r11->r6 < 0)
+    if (--r11->hitpoints < 0)
     {
         r11->x += r11->dx; r11->y += r11->dy; r11->dy += (1<<4);
     }
@@ -312,7 +312,7 @@ void init_alspintab()
 void alien1(alent* r11)
 {
     colcheck(r11, 2, r11->y-(8<<8));
-    char* r5 = albcheck(r11);
+    albcheck(r11);
     r11->x += r11->dx; r11->y += r11->dy;
 
     r11->dy += 1<<7; // gravity
@@ -322,10 +322,10 @@ void alien1(alent* r11)
     bulcolchadd(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight/2))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -352,10 +352,10 @@ void alien2(alent* r11)
     bulcolchadd(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -382,10 +382,10 @@ void alien3(alent* r11)
     bulcolchadd(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -412,10 +412,10 @@ void alien4(alent* r11)
     bulcolchadd(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -428,7 +428,6 @@ void alien4(alent* r11)
 
     if (plotal == 0) return;
 
-    int x, y;
     relplot(alspradr, 2, r11->x, r11->y);
     relplot(alspradr, 4+((r11->r5>>24)&3), r11->x, r11->y-(7<<8));
     if (r11->r5&(1<<31)) return;
@@ -457,10 +456,10 @@ void alien5(alent* r11)
     bulcolchadd(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -473,7 +472,6 @@ void alien5(alent* r11)
 
     if (plotal == 0) return;
 
-    int x, y;
     relplot(alspradr, 2, r11->x, r11->y);
     relplot(alspradr, 4+((r11->r5>>24)&3), r11->x, r11->y-(7<<8));
     if (r11->r5&(1<<31)) return;
@@ -501,10 +499,10 @@ void alien6(alent* r11)
     bulcolchadd(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -517,7 +515,6 @@ void alien6(alent* r11)
 
     if (plotal == 0) return;
 
-    int x, y;
     relplot(alspradr, 3, r11->x, r11->y);
     relplot(alspradr, 4+((r11->r5>>24)&3), r11->x, r11->y-(7<<8));
     if (r11->r5&(1<<31)) return;
@@ -583,10 +580,10 @@ void alien7(alent* r11)
     bulcolchadd(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -615,10 +612,10 @@ void alien8(alent* r11)
     bulcolchadd(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -647,10 +644,10 @@ void alien9(alent* r11)
     bulcolchadd(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -678,10 +675,10 @@ void alien10(alent* r11)
     bulcolchadd(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -698,7 +695,7 @@ void alien10(alent* r11)
 void alien11(alent* r11)
 {
     colcheck(r11, 1, r11->y-(8<<8));
-    char* r5 = albcheck(r11);
+    albcheck(r11);
     r11->x += r11->dx; r11->y += r11->dy; // no gravity
 
     alienwanderfly(r11);
@@ -706,10 +703,10 @@ void alien11(alent* r11)
     bulcolchadd(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -726,7 +723,7 @@ void alien11(alent* r11)
 void alien12(alent* r11)
 {
     colcheck(r11, 1, r11->y-(8<<8));
-    char* r5 = albcheck(r11);
+    albcheck(r11);
     r11->x += r11->dx; r11->y += r11->dy; // no gravity
     r11->dx += r11->dx>>6; r11->dy += r11->dy>>6;
     if (r11->dx > _speedlim) r11->dx = _speedlim;
@@ -739,10 +736,10 @@ void alien12(alent* r11)
     bulcolchadd(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -759,7 +756,7 @@ void alien12(alent* r11)
 void alien13(alent* r11)
 {
     colcheck(r11, 2, r11->y-(8<<8));
-    char* r5 = albcheck(r11);
+    albcheck(r11);
     r11->x += r11->dx; r11->y += r11->dy;
 
     if (r11->dy > (1<<11)) r11->dy = 1<<11;
@@ -768,10 +765,10 @@ void alien13(alent* r11)
     bulcolchaddshort(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight/2))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -786,7 +783,7 @@ void alien13(alent* r11)
 void alien14(alent* r11)
 {
     colcheck(r11, 1, r11->y-(8<<8));
-    char* r5 = albcheck(r11);
+    albcheck(r11);
     r11->x += r11->dx; r11->y += r11->dy;
 
     r11->dy++;
@@ -796,10 +793,10 @@ void alien14(alent* r11)
     if (r11->downhit == 1) hamsterspecial(r11);
     if (plcolcheck(r11->x, r11->y, _alwidth, _alheight))
     {
-        pllosestrength(_explocontloss); r11->r6 -= _explocontloss;
+        pllosestrength(_explocontloss); r11->hitpoints -= _explocontloss;
     }
     // [R11,#20] ; alien strength
-    if (r11->r6 <= 0)
+    if (r11->hitpoints <= 0)
     {
         alkill(r11); return;
     }
@@ -814,7 +811,7 @@ void alien14(alent* r11)
 void hamsterspecial(alent* r11)
 {
     r11->type = _Alien1+11;
-    r11->r6 = 12<<8;
+    r11->hitpoints = 12<<8;
     r11->dx = r11->dy = 0;
 }
 
@@ -1003,7 +1000,7 @@ void normbomb(char* r0, alent* r11)
 
 void bonusobjgot(alent* r11)
 {
-    int r0 = r11->r6;
+    int r0 = r11->hitpoints;
     bonuscommon(r0-_bonuslow, r11->x, r11->y);
     r11->type = 0;
     //r11->dx = (random()&(0xfe<<1))-0xfe;
@@ -1073,7 +1070,7 @@ void flyingbonus(alent* r11)
     if (r11->r5 < 0)
     {
         r11->type = _Dyingbonus;
-        r11->r5 = r11->r6|(1<<20);
+        r11->r5 = r11->hitpoints|(1<<20);
     }
 
     if (plcolcheck(r11->x, r11->y, (16<<8), 0))
@@ -1082,7 +1079,7 @@ void flyingbonus(alent* r11)
 
     if (plotal == 0) return;
 // r8=8-(r8>>17); ???
-    relplot(blockadr, r11->r6&0xff, r11->x, r11->y);
+    relplot(blockadr, r11->hitpoints&0xff, r11->x, r11->y);
 }
 
 void dyingbonus(alent* r11)
@@ -1236,7 +1233,6 @@ void bulcolchaddshort(alent* r11)
 void platland(alent* r11, char r9)
 {
     char* r0 = translate(r11->x, r11->y);
-    char r1 = *r0;
 
     if (*r0 >= _platblim) r0 -= boardwidth;
     if ((*(r0+boardwidth) != _extendno)
@@ -1284,8 +1280,8 @@ alent* bulcolcheck(int x, int y)
 
 int projhital(alent* al, int loss)
 {
-    al->r6 -= loss;
-    if (al->r6 > 0) return 0;
+    al->hitpoints -= loss;
+    if (al->hitpoints > 0) return 0;
     int r0 = al->type;
     int r6 = (random()&7)+((r0 >= _Alien1) ? (r0-_Alien1) : 0)+_bonuslow;
     if (r6 > _bonushigh) r6 = _bonushigh-3;
@@ -1755,7 +1751,7 @@ void save_alents(uint8_t store[_savearealen*28])
             write_littleendian(st+12, al->dx);
             write_littleendian(st+16, al->dy);
             write_littleendian(st+20, al->r5);
-            write_littleendian(st+24, al->r6);
+            write_littleendian(st+24, al->hitpoints);
             st += 28;
             al++;
         }
@@ -1777,7 +1773,7 @@ void restore_alents(uint8_t store[_savearealen*28])
         al->dx = read_littleendian(st+12);
         al->dy = read_littleendian(st+16);
         al->r5 = read_littleendian(st+20);
-        al->r6 = read_littleendian(st+24);
+        al->hitpoints = read_littleendian(st+24);
         al++;
         st += 28;
     }
@@ -1838,7 +1834,7 @@ int foundmakeal(alent* r10, int newalctr, int r0, int r1, int r2, int r3, int r4
 {
     r10->type = r0;
     r10->x = r1; r10->y = r2; r10->dx = r3; r10->dy = r4;
-    r10->r5 = r5; r10->r6 = r6;
+    r10->r5 = r5; r10->hitpoints = r6;
 
     alctr = newalctr+1;
     if (alctr >= _alno) alctr = 0;
