@@ -28,8 +28,8 @@ static int write_file(const char* path, char* start, char* end);
 static int get_file_length(const char* path);
 static int does_file_exist(const char* path);
 
-static char resource_path[240];
-static char score_path[240];
+static char resource_path[PATH_MAX];
+static char score_path[PATH_MAX];
 
 char configname[] = "/.asylum";
 char savegamename[] = "/.asylum_game";
@@ -43,7 +43,7 @@ FILE* score_file[4];
 
 FILE* find_game(int op)
 {
-    char fullname[240] = "";
+    char fullname[PATH_MAX] = "";
 
     char* home = getenv("HOME");
     if (home)
@@ -64,7 +64,7 @@ FILE* find_game(int op)
 
 FILE* find_config(int op)
 {
-    char fullname[240] = "";
+    char fullname[PATH_MAX] = "";
 
     char* home = getenv("HOME");
     if (home)
@@ -114,7 +114,7 @@ void write_littleendian(uint8_t* bytes, uint32_t word)
 int load_data(char** spaceptr, char* filename, char* path)
 {
     int reload = 0;
-    char fullname[240];
+    char fullname[PATH_MAX];
     int length;
 
     snprintf(fullname, sizeof(fullname), "%s%s", path, filename);
@@ -134,7 +134,7 @@ int load_data(char** spaceptr, char* filename, char* path)
 int loadvitalfile(char** spaceptr, char* r1, char* path)
 {
 // if VS or if r0==1
-    char fullname[240] = "";
+    char fullname[PATH_MAX] = "";
 
     strcat(fullname, path);
     strcat(fullname, r1);
@@ -148,7 +148,7 @@ int loadvitalfile(char** spaceptr, char* r1, char* path)
 int loadfile(char** spaceptr, char* r1, char* path)
 {
     int r4;
-    char fullname[240] = "";
+    char fullname[PATH_MAX] = "";
 
     snprintf(fullname, sizeof(fullname), "%s%s", path, r1);
     r4 = get_file_length(fullname);
@@ -187,7 +187,7 @@ void set_paths()
     fprintf(stderr, "Running as uninstalled, looking for files in local directory.\n");
 
 #ifdef HAVE_GET_EXE_PATH
-    char exe_path[240];
+    char exe_path[PATH_MAX];
     if (get_exe_path(exe_path, sizeof(exe_path)))
     {
         strcpy(resource_path, exe_path);
@@ -268,7 +268,7 @@ void loadscores(char* highscorearea, int mentalzone)
 
 int filelength(const char* name, const char* path)
 {
-    char fullname[240] = "";
+    char fullname[PATH_MAX] = "";
 
     snprintf(fullname, sizeof(fullname), "%s%s", path, name);
     int r4 = get_file_length(fullname);
