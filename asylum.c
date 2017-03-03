@@ -31,7 +31,7 @@
 static char bank;
 static char rate50;
 static char cheatpermit;
-static char charsok, arm3;
+static char charsok;
 
 static char* backadr;
 static board *brainadr;
@@ -63,7 +63,6 @@ void init()
     bank = 1;
     switchbank(); //set up bank variables
     switchbank(); //set up bank variables
-    checkifarm3();
     if (getfiles()) abort_game();
     //vduread(options); // set screen size from options
 
@@ -243,9 +242,8 @@ static const int keydefs[] =
 
 void setdefaults()
 {
-    checkifarm3();
     options.soundtype = 2;
-    options.soundquality = (arm3 == 0) ? 0 : 1;
+    options.soundquality = 1;
     options.soundvol = 0x7f;
     options.musicvol = 0x7f;
     options.leftkey = keydefs[0];
@@ -253,8 +251,8 @@ void setdefaults()
     options.upkey = keydefs[2];
     options.downkey = keydefs[3];
     options.firekey = keydefs[4];
-    options.gearchange = (arm3 == 0) ? 0 : 1;
-    options.explospeed = (arm3 == 0) ? 2 : 1;
+    options.gearchange = 1;
+    options.explospeed = 1;
     options.fullscreen = 0;
     options.opengl = 1;
     options.size = 1; // 640 x 512
@@ -330,13 +328,6 @@ void soundupdate()
    SWI "XSound_Enable"
    LDMFD R13!,{PC}
  */
-
-void checkifarm3()
-{
-// The ARM3 is 25-33MHz with a 4Kb cache.  If you have
-// less than that you should probably clear this flag.
-    arm3 = 1;
-}
 
 int checkifextend()
 {
