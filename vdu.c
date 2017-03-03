@@ -84,7 +84,7 @@ void switchbank()
 void fspplotscaled(fastspr_sprite* sprites, char n, float x, float y,
 		   float xs, float ys)
 {
-    fastspr_sprite sprite = sprites[(char)n];
+    fastspr_sprite sprite = sprites[(int)n];
     static SDL_Rect pos;
     float w = sprite.w*xs, h = sprite.h*ys;
     float posx = x-sprite.x*xs, posy = y-sprite.y*ys;
@@ -282,8 +282,6 @@ void texthandler(int do_animation)
         int YyY = r11->y>>8;
         for (char* r10 = r11->text; *r10 != 0; r10++)
         {
-            char r0;
-            r0 = *r10;
             if ((*r10-1) < 48)  // only plot known characters (charsadr is [48])
                 fspplot(charsadr, *r10-1, XxX, YyY);
             XxX += 14;
@@ -358,7 +356,6 @@ void backdrop(int xpos, int ypos)
 
     int r3 = ((xpos>>8)-(xpos>>10)+3072-768); // parallax
     int r2 = (44+48-(r3%48))%48;
-    float float_r3 = (xpos*3.0/1024)+3072-768;
     float float_r2 = fmod(44+48-fmod(r3,48.0),48.0);
 
     int r4 = 0x1f&((ypos>>8)-(ypos>>10)); // parallax
@@ -692,7 +689,7 @@ void init_palette()
 
 void decomp(fastspr_sprite* DecompScreen, char* r11)
 {
-    Uint32* data;
+    Uint32* data = NULL;
     Uint32* r10;
     Uint32* r9;
     
@@ -729,7 +726,7 @@ void decomp(fastspr_sprite* DecompScreen, char* r11)
         }
         else for (int r3 = (r0&0x7f)+1; (r9 > r10) && (r3 != 0); r3--)
 	    {
-               loopb5: *(r10++) = palette[0xff&*(r11++)];
+                *(r10++) = palette[0xff&*(r11++)];
 	        if (vduvar.opengl) if (((r10-data)%512) == 320)  r10 += (512-320);
 	    }
     }
@@ -806,7 +803,7 @@ void backprep(char* backadr)
 	Uint32 ba[64*128];
 	for (int j = 63; j >= 0; j--)
 	    for (int i = 127/*95*/; i >= 0; i--)
-		ba[j*128+i] = palette[backadr[(j%32)*48+(i%48)]];
+		ba[j*128+i] = palette[(int)backadr[(j%32)*48+(i%48)]];
 	glEnable(GL_TEXTURE_2D);
 	glGenTextures(1, batex);
 	glBindTexture(GL_TEXTURE_2D, *batex);
@@ -819,7 +816,7 @@ void backprep(char* backadr)
 	Uint32* ba = (Uint32*)backsprite->pixels;
 	for (int j = 63; j >= 0; j--)
 	    for (int i = 95; i >= 0; i--)
-		ba[j*96+i] = palette[backadr[(j%32)*48+(i%48)]];
+		ba[j*96+i] = palette[(int)backadr[(j%32)*48+(i%48)]];
 	SDL_UnlockSurface(backsprite);
     }
 }
