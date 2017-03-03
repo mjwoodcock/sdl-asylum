@@ -424,7 +424,6 @@ int filelength(const char* name, const char* path);
 void showerror();
 void showerrorok();
 int errorwait();
-void errorhandler();
 void exithandler();
 void loadzone();
 void change_zone(int zone);

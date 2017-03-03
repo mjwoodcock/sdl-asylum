@@ -344,15 +344,6 @@ int checkifextend()
 }
 
 
-static char buffer[256];
-
-//.hta
-void errorhandler()
-{
-    losehandlers();
-    exit(printf("Error from Asylum:\n%s", buffer+4));
-}
-
 void exithandler()
 {
     losehandlers();
