@@ -130,6 +130,7 @@ typedef struct asylum_options
     char soundvol, musicvol, joyno;
     char idpermit;
     char initials[3];
+    int speaker;
 } asylum_options;
 typedef struct key_state
 {

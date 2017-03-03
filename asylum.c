@@ -22,6 +22,7 @@
 #include "asylum.h"
 #include "file.h"
 #include "keyboard.h"
+#include "sound.h"
 
 #define _firstzone 0
 
@@ -63,6 +64,9 @@ void init()
     switchbank(); //set up bank variables
     switchbank(); //set up bank variables
     if (getfiles()) abort_game();
+
+    if (options.soundtype == 2)
+        swi_sound_speaker(SPEAKER_ON);
 
     scorezero();
     cheatpermit = prelude();

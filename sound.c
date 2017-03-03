@@ -18,6 +18,7 @@
 #include <SDL/SDL_mixer.h>
 #include <math.h>
 #include "asylum.h"
+#include "sound.h"
 
 extern asylum_options options;
 
@@ -368,7 +369,8 @@ void swi_bodgemusic_stop()
 }
 void swi_bodgemusic_volume(int v)
 {
-    Mix_VolumeMusic(v);
+    if (options.speaker == SPEAKER_ON)
+        Mix_VolumeMusic(v);
 }
 void swi_bodgemusic_load(int a, char* b)
 {
@@ -391,9 +393,32 @@ void swi_sound_control(int c, int a, int p, int d)
 {
     ;
 }
+
+/* RISC OS Sound_Speaker (PRM 4-24) 
+ *   s == 0: read state
+ *   s == 1: turn speaker off
+ *   s == 2: turn speaker on
+ *
+ * Returns previous state */
 int swi_sound_speaker(int s)
 {
-    ;
+    int r = options.speaker;
+
+    if (s != SPEAKER_GET)
+    {
+        options.speaker = s;
+    }
+
+    if (s == SPEAKER_OFF)
+    {
+       Mix_VolumeMusic(0);
+    }
+    else if (s == SPEAKER_ON)
+    {
+       Mix_VolumeMusic(options.soundvol);
+    }
+
+    return r;
 }
 void swi_stasis_link(int a, int b)
 {
