@@ -55,7 +55,6 @@ asylum_options options;
 
 void init()
 {
-// SWI "FastSpr_GetAddress";
     setdefaults();
     loadconfig();
     vduread(options);
@@ -64,7 +63,6 @@ void init()
     switchbank(); //set up bank variables
     switchbank(); //set up bank variables
     if (getfiles()) abort_game();
-    //vduread(options); // set screen size from options
 
     scorezero();
     cheatpermit = prelude();
@@ -138,8 +136,6 @@ int game()
                 {
                     loadzone(); goto zonerestart;
                 }
-//BL saveal
-//BL restoreal
                 if ((char)rate50 != 1)
                 {
                     plmove();
@@ -170,7 +166,6 @@ int game()
                 update_show_strength();
                 texthandler(1);
                 seeifdead();
-//makesounds();
                 wakeupal(xpos, ypos);
                 if (cheatpermit == 1) cheatread();
                 scorewipe();
@@ -188,7 +183,6 @@ int game()
                 framectr += frameinc;
 
                 switchbank();
-                //swi_blitz_smallretrieve();
                 switch (player_dead())
                 {
 		   case 1:
@@ -348,10 +342,6 @@ void setup()
 
 void wipesoundtab()
 {
-//r10=&soundtabofs; temporarily undefined
-    for (int r3 = _soundentlen*8; r3 > 0; r3 -= sizeof(int))
-		;
-        //*(r10++)=0;
     for (int r0 = 7; r0 >= 0; r0--)
         swi_stasis_volslide(r0, 0xfc00, 0);
 }
@@ -533,8 +523,6 @@ int retrievebackdrop()
 
 int getneuronfiles(int plzone)
 {
-
-//STR R10,[R12,#backadr]
     load_data(&backadr, neuronbackpath, currentpath);
     while (1)
     {
@@ -562,7 +550,7 @@ void loadconfig()
 {
     char keyword[12];
 
-    FILE* r0 = find_config(FIND_DATA_READ_ONLY); // read access
+    FILE* r0 = find_config(FIND_DATA_READ_ONLY);
     if (r0 != NULL)
     {
         while (fscanf(r0, " %12s", keyword) != EOF)
@@ -607,7 +595,7 @@ void loadconfig()
 
 void saveconfig()
 {
-    FILE* r0 = find_config(FIND_DATA_READ_WRITE); // create file with read/write access
+    FILE* r0 = find_config(FIND_DATA_READ_WRITE);
     if (r0 == NULL) return;
     fprintf(r0, "%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %i\n%s %c%c%c\n%s",
             config_keywords[0], -options.leftkey,
@@ -635,7 +623,6 @@ void loadgame()
 {
     FILE* r0 = find_game(FIND_DATA_READ_ONLY);
     if (r0 == NULL) /* XXX failing silently is bad */ return;
-    //uint8_t dimensions[8];
     fread(&options.mentalzone, 1, 1, r0);
     fread(&plzone, 1, 1, r0);  currentzone = plzone;
     fread(store_player_state, 1, 25, r0);
@@ -644,15 +631,10 @@ void loadgame()
     fread(store_for_savegame, 1, 30+78*28, r0);
     fread(store_for_neuron, 1, 30+78*28, r0);
     restoreal(store_for_savegame);
-    //fread(dimensions, 8, 1, r0);
-    //brainadr->width = read_littleendian(dimensions);
-    //brainadr->height = read_littleendian(dimensions+4);
     fread(brainadr->contents, brainadr->width, brainadr->height, r0);
     if (plzone)
     {
         getneuronfiles(plzone); /* HACK determine dimensions and allocate neuronadr */
-        //neuronadr->width = read_littleendian(dimensions);
-        //neuronadr->height = read_littleendian(dimensions+4);
         fread(neuronadr->contents, neuronadr->width, neuronadr->height, r0);
     }
     fclose(r0);
@@ -665,7 +647,6 @@ void savegame()
 {
     FILE* r0 = find_game(FIND_DATA_READ_WRITE);
     if (r0 == NULL) /* XXX failing silently is bad */ return;
-    //uint8_t dimensions[8];
     fwrite(&options.mentalzone, 1, 1, r0);
     fwrite(&plzone, 1, 1, r0);
     save_player_state(store_player_state);
@@ -673,14 +654,9 @@ void savegame()
     saveal(store_for_savegame);
     fwrite(store_for_savegame, 1, 30+78*28, r0);
     fwrite(store_for_neuron, 1, 30+78*28, r0);
-    //write_littleendian(dimensions, brainadr->width);
-    //write_littleendian(dimensions+4, brainadr->height);
-    //fwrite(dimensions, 8, 1, r0);
     fwrite(brainadr->contents, brainadr->width, brainadr->height, r0);
     if (plzone)
     {
-        //write_littleendian(dimensions, neuronadr->width);
-        //write_littleendian(dimensions+4, neuronadr->height);
         fwrite(neuronadr->contents, neuronadr->width, neuronadr->height, r0);
     }
     fclose(r0);
