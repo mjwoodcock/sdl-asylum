@@ -370,7 +370,13 @@ void swi_bodgemusic_stop()
 void swi_bodgemusic_volume(int v)
 {
     if (options.speaker == SPEAKER_ON)
+    {
         Mix_VolumeMusic(v);
+    }
+    else
+    {
+        Mix_VolumeMusic(0);
+    }
 }
 void swi_bodgemusic_load(int a, char* b)
 {
