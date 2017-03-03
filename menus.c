@@ -107,7 +107,7 @@ int options_menu(int gameon)
         swi_blitz_wait(20); //
         switch (readopt((gameon == 0) ? 3 : 3))
         {
-        case -1: optionexit: return 1;
+        case -1: return 1;
         case  1: choosecontrol(); dosaveconf(); break;
         case  2: tunegame(); dosaveconf(); break;
         case  3: if (gameon == 0)
