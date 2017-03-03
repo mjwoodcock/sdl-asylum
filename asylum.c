@@ -260,7 +260,17 @@ void setdefaults()
 
 int checkifextend()
 {
-    return (NULL != find_game(FIND_DATA_READ_ONLY));
+    FILE *fp;
+    int r;
+
+    fp = find_game(FIND_DATA_READ_ONLY);
+    r = (fp != NULL);
+    if (fp)
+    {
+        fclose(fp);
+    }
+
+    return r;
 }
 
 
