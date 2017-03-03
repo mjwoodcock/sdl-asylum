@@ -87,7 +87,7 @@ void init()
         if (gotallneurons())
         {
             if (options.idpermit != 1) permitid();
-            swi_bodgemusic_start(1, 0); // ?? (3,0) in original
+            if (oprions.soundtype == 2) swi_bodgemusic_start(1, 0); // ?? (3,0) in original
         }
         else                            // was "else if overflow clear"
         {
