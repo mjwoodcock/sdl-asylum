@@ -19,6 +19,7 @@
 
 #include "asylum.h"
 #include "keyboard.h"
+#include "sound.h"
 
 extern fastspr_sprite charsadr[48];
 
@@ -317,21 +318,23 @@ static char tunevol1[] = "-5. Speaker on";
 void tunevolume()
 {
     showchatscreen();
-    wipetexttab();
     if (sound_available && (options.soundtype == 2)) swi_bodgemusic_start(1);
     swi_bodgemusic_volume(options.musicvol);
-    message(80, 32, 0, 0, "Change volume");
-    message(48, 96, 0, 0, "1. Louder effects");
-    message(48, 116, 0, 0, "2. Quieter effects");
-    message(48, 136, 0, 0, "3. Louder music");
-    message(48, 156, 0, 0, "4. Quieter music");
-    message(48-14, 176, 0, 0, tunevol1);
-    message(96, 220, 0, 0, "ESC - Exit");
     do
     {
-        swi_bodgemusic_volume(options.musicvol);
-        if (swi_sound_speaker(0)) *tunevol1 = 17;
+        if (swi_sound_speaker(0) == SPEAKER_OFF) *tunevol1 = 17;
         else *tunevol1 = 16;
+
+        wipetexttab();
+        message(80, 32, 0, 0, "Change volume");
+        message(48, 96, 0, 0, "1. Louder effects");
+        message(48, 116, 0, 0, "2. Quieter effects");
+        message(48, 136, 0, 0, "3. Louder music");
+        message(48, 156, 0, 0, "4. Quieter music");
+        message(48-14, 176, 0, 0, tunevol1);
+        message(96, 220, 0, 0, "ESC - Exit");
+
+        swi_bodgemusic_volume(options.musicvol);
         swi_blitz_wait(0);
         swi_fastspr_clearwindow();
         showtext();
