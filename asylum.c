@@ -366,7 +366,7 @@ void c_array_initializers()
 {
     init_projsplittab(); init_rocketbursttab(); init_alspintab(); init_rockettab();
     init_palette(); init_splittab();
-    load_voices();
+    load_voices(0);
     init_keyboard();
 }
 
@@ -376,8 +376,8 @@ int main(int argc, char** argv)
 
     if ((argc > 2) && !strcmp(argv[1], "--dumpmusic"))
     {
-	dropprivs();
-        load_voices();
+        dropprivs();
+        load_voices(1);
         dumpmusic(argc,argv);
         exit(0);
     }
