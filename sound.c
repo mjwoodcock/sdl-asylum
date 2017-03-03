@@ -20,6 +20,7 @@
 #include "asylum.h"
 
 extern asylum_options options;
+
 char sound_available;
 
 void bidforsoundforce(int r0, char r1, char r2, int r3, int r4, int r5, char r6, int r7, Mix_Chunk* chunk)
@@ -70,11 +71,11 @@ typedef struct
     char* section;
     int pointer;
 } music_state;
-music_state music;
-char voice[32][30000];
-char tuneload[4][30000];
-Sint16 mulaw[256];
-Mix_Music* oggmusic[4];
+static music_state music;
+static char voice[32][30000];
+static char tuneload[4][30000];
+static Sint16 mulaw[256];
+static Mix_Music* oggmusic[4];
 
 void init_audio()
 {
@@ -154,7 +155,7 @@ void soundclaim(int c, char samp, char initvol, int initpitch, int volslide, int
     //if (old_chunk) Mix_FreeChunk(old_chunk); XXX memory leak
 }
 
-FILE* musicdumpfile;
+static FILE* musicdumpfile;
 
 void sdl_music_hook(void* udata, Uint8* stream, int len)
 {

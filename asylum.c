@@ -28,35 +28,34 @@
 #define _soundentlen 16
 
 
-char bank;
+static char bank;
+static char rate50;
+static char cheatpermit;
+static char charsok, arm3;
+
+static char* backadr;
+static board *brainadr;
+static board *neuronadr;
+static int currentzone;
+
+static int plzone;
+
 char masterplotal;
 char frameinc = 1;
-char rate50;
-char cheatpermit;
-char charsok, arm3, savestart;
-asylum_options options;
-
+int framectr;
 board *boardadr;
 fastspr_sprite blokeadr[77];
 fastspr_sprite blockadr[256];
-char* backadr;
-int framectr;
-board *brainadr;
-board *neuronadr;
-int fspareat;
-fastspr_sprite exploadr[32];
 fastspr_sprite charsadr[48];
+fastspr_sprite exploadr[32];
 fastspr_sprite alspradr[256];
-int currentzone;
-
 int xpos, ypos;
 char plscore[8];
-int plzone;
+asylum_options options;
 
 void init()
 {
 // SWI "FastSpr_GetAddress";
-// set up fspplot, fspvars, fspareat=fspvars+24
     setdefaults();
     loadconfig();
     vduread(options);
@@ -217,9 +216,9 @@ void showtext()
     switchbank();
 }
 
-uint8_t store_for_neuron[30+78*28];
-uint8_t store_for_savegame[30+78*28];
-uint8_t store_player_state[25];
+static uint8_t store_for_neuron[30+78*28];
+static uint8_t store_for_savegame[30+78*28];
+static uint8_t store_player_state[25];
 
 void saveal(uint8_t store[30+78*28])
 {
@@ -239,7 +238,7 @@ void bonus1()
     bonusnumb(10); message(96, 224, 0, -2, "Bonus 10000"); addtoscore(10000);
 }
 
-const int keydefs[] =
+static const int keydefs[] =
 { -SDLK_z, -SDLK_x, -SDLK_SEMICOLON, -SDLK_PERIOD, -SDLK_RETURN };
 
 void setdefaults()
@@ -345,7 +344,7 @@ int checkifextend()
 }
 
 
-char buffer[256];
+static char buffer[256];
 
 //.hta
 void errorhandler()
@@ -443,6 +442,7 @@ void wipesoundtab()
 void screensave()
 {
     plotscore();
+	/* XXX: Add code to save the screen here */
 }
 
 void c_array_initializers()
@@ -484,31 +484,30 @@ int main(int argc, char** argv)
 
 
 
-char gamescreenpath[] = "GameScreen";
-char chatscreenpath[] = "ChatScreen";
-char blokepath[] = "FSPBloke";
-char boardpath[] = "Brain.dat";
-char blockpath[] = "FSPBlocks.fsp";
-char backpath[] = "Backfile.dat";
-char neuronbackpath[] = "Neurons/Backfile.dat";
-char neuronpath[] = "Neurons/Cell1.dat";
-char* neuronnumber = neuronpath+12;
-char explopath[] = "FSPExplo";
-char charpath[] = "FSPChars";
-char alienpath[] = "FSPAliens.fsp";
-char resourcepath[] = "./Resources/";
-char extendpath[] = "./Extend/";
-char idpath[] = "./Id/";
-char psychepath[] = "./Psyche/";
-char egopath[] = "./Ego/";
-char egomusic1path[] = "./Ego/Music1";
-char egomusic2path[] = "./Ego/Music2";
-char psychemusic1path[] = "./Psyche/Music1";
-char psychemusic2path[] = "./Psyche/Music2";
-char idmusic1path[] = "./Id/Music1";
-char idmusic2path[] = "./Id/Music2";
-char mainmusicpath[] = "./Resources/Music1";
-char deathmusicpath[] = "./Resources/Music2";
+static char gamescreenpath[] = "GameScreen";
+static char chatscreenpath[] = "ChatScreen";
+static char blokepath[] = "FSPBloke";
+static char boardpath[] = "Brain.dat";
+static char blockpath[] = "FSPBlocks.fsp";
+static char backpath[] = "Backfile.dat";
+static char neuronbackpath[] = "Neurons/Backfile.dat";
+static char neuronpath[] = "Neurons/Cell1.dat";
+static char* neuronnumber = neuronpath+12;
+static char explopath[] = "FSPExplo";
+static char charpath[] = "FSPChars";
+static char alienpath[] = "FSPAliens.fsp";
+static char resourcepath[] = "./Resources/";
+static char idpath[] = "./Id/";
+static char psychepath[] = "./Psyche/";
+static char egopath[] = "./Ego/";
+static char egomusic1path[] = "./Ego/Music1";
+static char egomusic2path[] = "./Ego/Music2";
+static char psychemusic1path[] = "./Psyche/Music1";
+static char psychemusic2path[] = "./Psyche/Music2";
+static char idmusic1path[] = "./Id/Music1";
+static char idmusic2path[] = "./Id/Music2";
+static char mainmusicpath[] = "./Resources/Music1";
+static char deathmusicpath[] = "./Resources/Music2";
 
 int getfiles()
 {
@@ -538,7 +537,7 @@ void getmusicfiles()
     swi_bodgemusic_load(2, deathmusicpath);
 }
 
-char* currentpath;
+static char* currentpath;
 
 void getgamefiles()
 {
@@ -634,13 +633,13 @@ int getneuronfiles(int plzone)
     return plzone;
 }
 
-char config_keywords[16][12] =
+static char config_keywords[16][12] =
 { "LeftKeysym",    "RightKeysym", "UpKeysym",   "DownKeysym", "FireKeysym",
   "SoundType",   "SoundQ",      "FullScreen",
   "OpenGL", "ScreenSize", "ScreenScale",
   "SoundVolume", "MusicVolume", "MentalZone", "Initials",   "You" };
 
-char idpermitstring[] = "You are now permitted to play the ID!!!\n";
+static char idpermitstring[] = "You are now permitted to play the ID!!!\n";
 
 void loadconfig()
 {

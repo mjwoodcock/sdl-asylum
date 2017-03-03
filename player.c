@@ -1,5 +1,4 @@
 /*  player.c */
-
 /*  Copyright Hugh Robinson 2006-2008.
 
     This program is free software; you can redistribute it and/or modify
@@ -21,50 +20,50 @@
 extern fastspr_sprite blokeadr[77], blockadr[256], alspradr[256], exploadr[32];
 
 extern const char _translowlim = 54, _transhighlim = 63;
-const char _weapmpmgblam = 102, _weaprocketblam = 111;
 extern const char _blim = 112;
 extern const char _platlowlim, _plathighlim;
-const char _teleplowlim = 192, _telephighlim = 199;
 extern const char _extendno = 152;
-const char _shutdownno = 200;
-
-#define _neuronstoget 8
-
-#define _rockettablen 192
-
-int* rockettabadr;
-char falling;
-char plframe, plface;
-char plfired, plweapontype, plweaponspeed;
-char pluphit, firerate;
-char rocketflag, electrocuting, platuphit;
-char blamctr, rocketblamctr, plotterofs, hiddenplatctr, extending;
-char bonusctr;
-int16_t bonusreplot;
-int windctr;
-int firelastframe;
-int rocketctr;
-int shutdownctr;
-char atombombctr;
-int laststrength;
-int telepctr;
-int telepxpos; int telepypos;
-int bonusxpos; int bonusypos; int bonustimer;
-int lagerctr, plstrength;
-int neuronctr;
-int snuffctr;
-int lives;
-int plscoreadd;
 extern char plscore[8];
 extern int boardwidth;
 extern int framectr;
 extern char frameinc;
 extern int xpos, ypos, xposmax, yposmax;
 
-key_state ks;
-int initplx, initply, hvec, vvec;
+static const char _weapmpmgblam = 102, _weaprocketblam = 111;
+static const char _teleplowlim = 192, _telephighlim = 199;
+static const char _shutdownno = 200;
 
-const char _mpmgblamno = 8, _rocketblamno = 16;
+#define _neuronstoget 8
+
+#define _rockettablen 192
+
+static int* rockettabadr;
+static char falling;
+static char plframe, plface;
+static char plfired, plweapontype, plweaponspeed;
+static char pluphit, firerate;
+static char rocketflag, electrocuting, platuphit;
+static char blamctr, rocketblamctr, plotterofs, hiddenplatctr, extending;
+static char bonusctr;
+static int16_t bonusreplot;
+static int windctr;
+static int firelastframe;
+static int rocketctr;
+static int shutdownctr;
+static int laststrength;
+static int telepctr;
+static int telepxpos; int telepypos;
+static int bonusxpos; int bonusypos; int bonustimer;
+static int lagerctr, plstrength;
+static int neuronctr;
+static int snuffctr;
+static int lives;
+static int plscoreadd;
+
+static key_state ks;
+static int initplx, initply, hvec, vvec;
+
+static const char _mpmgblamno = 8, _rocketblamno = 16;
 
 #define _funnyfacesprbase 66
 #define _scoresprbase 16
@@ -79,31 +78,33 @@ const char _mpmgblamno = 8, _rocketblamno = 16;
 #define _plwidth (16<<8)
 #define _strengthinit (108<<8)
 
-Mix_Chunk* CHUNK_ELEC_1;
-Mix_Chunk* CHUNK_ELEC_2;
-Mix_Chunk* CHUNK_ELEC_3;
-Mix_Chunk* CHUNK_JUMP;
-Mix_Chunk* CHUNK_SHUTDOWN_1;
-Mix_Chunk* CHUNK_SHUTDOWN_2;
-Mix_Chunk* CHUNK_SHUTDOWN_3;
-Mix_Chunk* CHUNK_TELEP_1;
-Mix_Chunk* CHUNK_TELEP_2;
-Mix_Chunk* CHUNK_TELEP_3;
-Mix_Chunk* CHUNK_BLAM;
-Mix_Chunk* CHUNK_FIRE;
-Mix_Chunk* CHUNK_BLAMFIRE;
-Mix_Chunk* CHUNK_ROCKET;
-Mix_Chunk* CHUNK_STUNNED[17];
-Mix_Chunk* CHUNK_WEAPON_1;
-Mix_Chunk* CHUNK_WEAPON_2;
-Mix_Chunk* CHUNK_WEAPON_3;
-Mix_Chunk* CHUNK_WEAPON_4;
-Mix_Chunk* CHUNK_OBJGOT[10];
+static Mix_Chunk* CHUNK_ELEC_1;
+static Mix_Chunk* CHUNK_ELEC_2;
+static Mix_Chunk* CHUNK_ELEC_3;
+static Mix_Chunk* CHUNK_JUMP;
+static Mix_Chunk* CHUNK_SHUTDOWN_1;
+static Mix_Chunk* CHUNK_SHUTDOWN_2;
+static Mix_Chunk* CHUNK_SHUTDOWN_3;
+static Mix_Chunk* CHUNK_TELEP_1;
+static Mix_Chunk* CHUNK_TELEP_2;
+static Mix_Chunk* CHUNK_TELEP_3;
+static Mix_Chunk* CHUNK_BLAM;
+static Mix_Chunk* CHUNK_FIRE;
+static Mix_Chunk* CHUNK_BLAMFIRE;
+static Mix_Chunk* CHUNK_ROCKET;
+static Mix_Chunk* CHUNK_STUNNED[17];
+static Mix_Chunk* CHUNK_WEAPON_1;
+static Mix_Chunk* CHUNK_WEAPON_2;
+static Mix_Chunk* CHUNK_WEAPON_3;
+static Mix_Chunk* CHUNK_WEAPON_4;
+static Mix_Chunk* CHUNK_OBJGOT[10];
 
-char *pladr1, *pladr2, *pladr3, *pladr4, *pladr5, *pladr6, *pladr7, *pladr8;
+static char *pladr1, *pladr2, *pladr3, *pladr4, *pladr5, *pladr6, *pladr7, *pladr8;
+
+static const int _savevalid = 0x4b4f6349;
+
+char atombombctr;
 int pllx, plly, plhx, plhy;
-
-const int _savevalid = 0x4b4f6349;
 
 void save_player_state(uint8_t store[24])
 {
@@ -260,7 +261,7 @@ void plotrocketblam()
     plfired = 0;
 }
 
-int rockettab[_rockettablen];
+static int rockettab[_rockettablen];
 
 void initrockettab()
 {
@@ -316,7 +317,7 @@ void seeifdead()
     if (lives == 0) endgamemessage();
 }
 
-alent fraudalent;
+static alent fraudalent;
 
 void bcheck()
 {

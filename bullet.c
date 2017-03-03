@@ -21,11 +21,6 @@
 #define _bulno 64
 #define _bullim 0x1000
 
-bulent bulofs[_bullim];
-
-bulent* buladr;
-int bulctr;
-
 extern char _targetlowlim, _targethighlim, _translowlim, _transhighlim;
 
 extern int xposmax, yposmax;
@@ -35,13 +30,18 @@ extern char masterplotal;
 extern int xpos, ypos, pllx, plly, plhx, plhy;
 extern int framectr;
 
-Mix_Chunk* CHUNK_BULLET_1;
-Mix_Chunk* CHUNK_BULLET_2;
-Mix_Chunk* CHUNK_BULLET_3;
+static bulent bulofs[_bullim];
+
+static bulent* buladr;
+static int bulctr;
+
+static Mix_Chunk* CHUNK_BULLET_1;
+static Mix_Chunk* CHUNK_BULLET_2;
+static Mix_Chunk* CHUNK_BULLET_3;
 
 #define _bulspritebase 16
 
-int splittab[14];
+static int splittab[14];
 
 void init_splittab()
 {

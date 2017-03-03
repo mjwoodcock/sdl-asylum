@@ -27,17 +27,17 @@
 
 #define bulletloss (2<<8)
 
-const char _spcrumblelowlim = 140, _spcrumblehighlim = 143;
 extern const char _translowlim, _transhighlim;
 
 extern int xposmax, yposmax;
 extern fastspr_sprite blokeadr[];
 extern char masterplotal;
 
-projent projofs[_projlim];
+static const char _spcrumblelowlim = 140, _spcrumblehighlim = 143;
+static projent projofs[_projlim];
 
-projent* projadr;
-int projctr;
+static projent* projadr;
+static int projctr;
 
 void causeexplo(projent* r11)
 {
@@ -131,7 +131,7 @@ void project()       // the projectile handler
     }
 }
 
-int projsplittab[10];
+static int projsplittab[10];
 
 void init_projsplittab()
 {
@@ -183,7 +183,7 @@ void projsplit(projent* r11)
     r11->type = 0;
 }
 
-int rocketbursttab[10];
+static int rocketbursttab[10];
 
 void init_rocketbursttab()
 {

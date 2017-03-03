@@ -31,6 +31,8 @@ extern int boardwidth;
 
 extern const char _bonuslow;
 #define _strengthmax (108<<8)
+extern int framectr;
+extern char frameinc;
 
 struct vduvar
 {
@@ -49,30 +51,26 @@ struct vduvar
     int opengl;
 } vduvar;
 
-SDL_Surface* ArcScreen;
-//SDL_Surface* GameScreen;
-//SDL_Surface* ChatScreen;
-fastspr_sprite GameScreen;
-fastspr_sprite ChatScreen;
-SDL_Surface* backsprite;
-SDL_Surface* wipescr;
-SDL_Surface* redness;
-SDL_Surface* greyness;
-SDL_Rect clip;
+static SDL_Surface* ArcScreen;
+static fastspr_sprite GameScreen;
+static fastspr_sprite ChatScreen;
+static SDL_Surface* backsprite;
+static SDL_Surface* wipescr;
+static SDL_Surface* redness;
+static SDL_Surface* greyness;
+static SDL_Rect clip;
 
 #define _textno 32
 #define _textlen (20+60)
 #define _charwidth 16
 
-extern int framectr;
-extern char frameinc;
 
 typedef struct textinfo
 {
     int count; int x; int y; int dx; int dy;
     char text[60];
 } textinfo;
-textinfo texttabofs[_textno];
+static textinfo texttabofs[_textno];
 
 void switchbank()
 {
@@ -347,7 +345,7 @@ void mazeplot(int xpos, int ypos)
     }
 }
 
-GLuint batex[1];
+static GLuint batex[1];
 void backdrop(int xpos, int ypos)
 {
     //  swi_fastspr_clearwindow();
@@ -414,7 +412,7 @@ void plotbonus(char bonusctr, int16_t bonusreplot)
     writeclip(); // reset the clip window
 }
 
-GLuint redtex[1], greytex[1];
+static GLuint redtex[1], greytex[1];
 void showstrength(int r3)
 {
     if (r3 > _strengthmax) r3 = _strengthmax;
@@ -674,7 +672,7 @@ void init_strengthcol()
     }
 }
 
-int palette[256];
+static int palette[256];
 
 void init_palette()
 {

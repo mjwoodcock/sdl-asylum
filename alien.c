@@ -35,9 +35,6 @@
 extern fastspr_sprite blokeadr[77], blockadr[256], alspradr[256], exploadr[32];
 extern asylum_options options;
 
-const char _platblim = 64;
-const int _xofs = 159, _yofs = 96;
-const char _platno = 176;
 extern int boardwidth;
 extern int framectr;
 extern int xpos, ypos, xposmax, yposmax;
@@ -46,41 +43,45 @@ extern const char _blim;
 extern const char _extendno;
 extern const char _bonuslow, _bonushigh;
 extern const char _platlowlim = 176, _plathighlim = 190, _alplathighlim = 177;
-const int xblocks_disturb = 18, yblocks_disturb = 12;
-char plotal;
+
+static const char _platblim = 64;
+static const int _xofs = 159, _yofs = 96;
+static const char _platno = 176;
+static const int xblocks_disturb = 18, yblocks_disturb = 12;
+static char plotal;
 //char lefthit, righthit, uphit, downhit;         // word-aligned
-char alonobj, alonplat, colchplace;
-int sprlx; int sprly; int sprhx; int sprhy;
-int xtemp, ytemp;
-colchent* colchtab;
-colchent* colchptr;
-colchent* oldcolchtab;
-colchent* oldcolchptr;
-colchent* colchtabuse;
-colchent* colchptruse;
-alent* dodgypointer;
-bulcolchent* bulcolchptr;
+static char alonobj, alonplat, colchplace;
+static int sprlx; int sprly; int sprhx; int sprhy;
+static int xtemp, ytemp;
+static colchent* colchtab;
+static colchent* colchptr;
+static colchent* oldcolchtab;
+static colchent* oldcolchptr;
+static colchent* colchtabuse;
+static colchent* colchptruse;
+static alent* dodgypointer;
+static bulcolchent* bulcolchptr;
 //colchofs=&5000 // two tables
 #define _colchlim 0x400
 //bulcolchofs=&7000
 #define _bulcolchlim 0x400
-colchent colchofs[2*_colchlim];
-bulcolchent bulcolchtab[_bulcolchlim];
+static colchent colchofs[2*_colchlim];
+static bulcolchent bulcolchtab[_bulcolchlim];
 
 //alofs=&F00
 
-alent aladr[_alno];
-int alctr;
+static alent aladr[_alno];
+static int alctr;
 
-int* platsandstr;
+static int* platsandstr;
 #define _savearealen (0x9c0/32)
 
-Mix_Chunk* CHUNK_EXPLO;
-Mix_Chunk* CHUNK_ATOM;
-Mix_Chunk* CHUNK_SPINFIRE;
-Mix_Chunk* CHUNK_SPINPOWERFIRE;
-Mix_Chunk* CHUNK_SHOOT;
-Mix_Chunk* CHUNK_SHOOTNUTTER;
+static Mix_Chunk* CHUNK_EXPLO;
+static Mix_Chunk* CHUNK_ATOM;
+static Mix_Chunk* CHUNK_SPINFIRE;
+static Mix_Chunk* CHUNK_SPINPOWERFIRE;
+static Mix_Chunk* CHUNK_SHOOT;
+static Mix_Chunk* CHUNK_SHOOTNUTTER;
 
 void moval()
 {
@@ -297,7 +298,7 @@ void extender(alent* r11)
     relplot(blockadr, r11->r5&0xff, r11->x+r11->dx*7, r11->y);
 }
 
-int alspintab[40];
+static int alspintab[40];
 
 void init_alspintab()
 {

@@ -19,34 +19,33 @@
 #include <SDL/SDL_mixer.h>
 
 extern const char _bonuslow = 16, _bonushigh = 31, _megabonuslim = 35;
-const char _neuronlowlim = 40, _neuronhighlim = 47;
-const char _gaslowlim = 54, _gashighlim = 55;
-const char _animlowlim = 54, _animhighlim = 63;
-const char _eleclowlim = 56, _elecvertlowlim = 60, _elechighlim = 63;
-const char _fuelairno = 68;
-const char _bomblowlim = 64, _bombhighlim = 79;
-const char _atomlowlim = 72, _atomhighlim = 75;
-const char _boobylowlim = 76, _boobyhighlim = 79;
 extern const char _targetlowlim = 80, _powertarget = 84, _nuttertarget = 88, _targethighlim = 95;
-const char _weaplowlim = 96, _weaphighlim = 111;
-const char _solidlowlim = 128, _solidhighlim = 131;
-const char _crumblelowlim = 160, _crumblehighlim = 167;
-const char _crumblestandlowlim = 168, _crumblestandhighlim = 175;
-const char _starsno = 15;
-const char _markerno = 255;
+extern fastspr_sprite blockadr[256];
+extern board *boardadr;
+extern int framectr;
+extern char atombombctr;
 
-const char _triggerlim = 193;
+static const char _neuronlowlim = 40, _neuronhighlim = 47;
+static const char _gaslowlim = 54, _gashighlim = 55;
+static const char _animlowlim = 54, _animhighlim = 63;
+static const char _eleclowlim = 56, _elecvertlowlim = 60, _elechighlim = 63;
+static const char _fuelairno = 68;
+static const char _bomblowlim = 64, _bombhighlim = 79;
+static const char _atomlowlim = 72, _atomhighlim = 75;
+static const char _boobylowlim = 76, _boobyhighlim = 79;
+static const char _weaplowlim = 96, _weaphighlim = 111;
+static const char _solidlowlim = 128, _solidhighlim = 131;
+static const char _crumblelowlim = 160, _crumblehighlim = 167;
+static const char _crumblestandlowlim = 168, _crumblestandhighlim = 175;
+static const char _starsno = 15;
+static const char _markerno = 255;
+
+static const char _triggerlim = 193;
 #define _boxwidth 20
 #define _boxheight 16
 #define _boardhdrlen 32
 
-extern fastspr_sprite blockadr[256];
-extern board *boardadr;
-extern int framectr;
-int boardwidth;
-int xposmax; int yposmax;
-char *boardlowlim, *boardhighlim;
-extern char atombombctr;
+static char *boardlowlim, *boardhighlim;
 
 inline int block_anim(char b) {return ((b >= _animlowlim) && (b <= _animhighlim));}
 inline int block_solid(char b) {return ((b >= _solidlowlim) && (b <= _solidhighlim));}
@@ -60,22 +59,25 @@ int block_gas(char b) {return ((b >= _gaslowlim) && (b < _gashighlim));}
 #define bombloss (4<<8)
 #define atomloss (32<<8)
 
-Mix_Chunk* CHUNK_FUELAIR;
-Mix_Chunk* CHUNK_BONUS_1;
-Mix_Chunk* CHUNK_BONUS_2;
+static Mix_Chunk* CHUNK_FUELAIR;
+static Mix_Chunk* CHUNK_BONUS_1;
+static Mix_Chunk* CHUNK_BONUS_2;
 
 #define _windspeed (1<<8)
 
 #define _fuelairduration 0x18
 
 #define _fueltablim 0x3c0
-char* fueltabofs[2][_fueltablim]; // &8000
+static char* fueltabofs[2][_fueltablim]; // &8000
 // don't forget there's two of these
 
-char** fueltabread;
-char** fueltabwrite;
-int fueltabctr;
-int fuelairlastframe;
+static char** fueltabread;
+static char** fueltabwrite;
+static int fueltabctr;
+static int fuelairlastframe;
+
+int boardwidth;
+int xposmax; int yposmax;
 
 void fuelairproc()
 {
@@ -363,7 +365,7 @@ int normalbomb(char* r5)
     return bombloss;
 }
 
-int boobyvectab[] =
+static int boobyvectab[] =
 { -0x400, -0x80, 0x400, -0x80, 0, -0x400, 0, 0x400 };
 
 int boobybomb(char* r5)

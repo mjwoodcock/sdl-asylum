@@ -31,14 +31,14 @@ static int does_file_exist(const char* path);
 static char resource_path[PATH_MAX];
 static char score_path[PATH_MAX];
 
-char configname[] = "/.asylum";
-char savegamename[] = "/.asylum_game";
+static char configname[] = "/.asylum";
+static char savegamename[] = "/.asylum_game";
 
 static const char* score_name[4] = {
     "/EgoHighScores", "/PsycheHighScores", "/IdHighScores", "/ExtendedHighScores"
 };
 
-FILE* score_file[4];
+static FILE* score_file[4];
 
 
 FILE* find_game(int op)

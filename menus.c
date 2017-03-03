@@ -26,8 +26,8 @@ extern char sound_available;
 extern asylum_options options;
 extern char plscore[8];
 
-char highscorearea[13*5+1];           //=&D000
-char hstindex;
+static char highscorearea[13*5+1];           //=&D000
+static char hstindex;
 
 int escapehandler()
 {
@@ -257,13 +257,13 @@ void tunegame()
         }
 }
 
-char sound1[] = "-1. No Sound";
-char sound2[] = "-2. 4 Channels";
-char sound3[] = "-3. 4 Channels";
-char sound4[] = "-4. 8 Channels";
-char sound5[] = "-5. Normal Quality";
-char sound6[] = "-6. High Quality";
-char sound7[] = "-7. Overdrive";
+static char sound1[] = "-1. No Sound";
+static char sound2[] = "-2. 4 Channels";
+static char sound3[] = "-3. 4 Channels";
+static char sound4[] = "-4. 8 Channels";
+static char sound5[] = "-5. Normal Quality";
+static char sound6[] = "-6. High Quality";
+static char sound7[] = "-7. Overdrive";
 
 void tunesound()
 {
@@ -311,7 +311,7 @@ void soundfillin()
     sound7[0] = (options.soundquality&2) ? 16 : 17;
 }
 
-char tunevol1[] = "-5. Speaker on";
+static char tunevol1[] = "-5. Speaker on";
 
 void tunevolume()
 {
@@ -369,10 +369,10 @@ void tunevolume()
 }
 
 
-char speed1[] = "-1. Full Screen";
-char speed2[] = "-2. Use OpenGL";
-char speed3[] = "-4. Half scale";
-char sizedesc[][16] = {" 3.  320 x  256",
+static char speed1[] = "-1. Full Screen";
+static char speed2[] = "-2. Use OpenGL";
+static char speed3[] = "-4. Half scale";
+static char sizedesc[][16] = {" 3.  320 x  256",
 		       " 3.  640 x  512",
 		       " 3.  960 x  768",
 		       " 3. 1280 x 1024"};
@@ -501,8 +501,8 @@ int readopt(int maxopt)
     }
 }
 
-const int _x = 250;
-const int _v = -1;
+static const int _x = 250;
+static const int _v = -1;
 
 int prelude()
 {
@@ -657,7 +657,7 @@ int errorwait()
     return 1;
 }
 
-const char defscore[] = "00000000 PSY\n";
+static const char defscore[] = "00000000 PSY\n";
 
 void setdefaultscores()
 {
