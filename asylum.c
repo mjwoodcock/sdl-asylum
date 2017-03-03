@@ -487,15 +487,15 @@ int main(int argc, char** argv)
 char gamescreenpath[] = "GameScreen";
 char chatscreenpath[] = "ChatScreen";
 char blokepath[] = "FSPBloke";
-char boardpath[] = "Brain";
-char blockpath[] = "FSPBlocks";
-char backpath[] = "Backfile";
-char neuronbackpath[] = "Neurons/Backfile";
-char neuronpath[] = "Neurons/Cell1";
+char boardpath[] = "Brain.dat";
+char blockpath[] = "FSPBlocks.fsp";
+char backpath[] = "Backfile.dat";
+char neuronbackpath[] = "Neurons/Backfile.dat";
+char neuronpath[] = "Neurons/Cell1.dat";
 char* neuronnumber = neuronpath+12;
 char explopath[] = "FSPExplo";
 char charpath[] = "FSPChars";
-char alienpath[] = "FSPAliens";
+char alienpath[] = "FSPAliens.fsp";
 char resourcepath[] = "./Resources/";
 char extendpath[] = "./Extend/";
 char idpath[] = "./Id/";
@@ -544,11 +544,11 @@ void getgamefiles()
 {
     char *gamescreenadr, *blokeadr_load, *exploadr_load;
 
-    loadhammered_game(&gamescreenadr, gamescreenpath, resourcepath);
+    load_data(&gamescreenadr, gamescreenpath, resourcepath);
     initialize_gamescreen(gamescreenadr);
-    int blokelen = loadhammered_game(&blokeadr_load, blokepath, resourcepath);
+    int blokelen = load_data(&blokeadr_load, blokepath, resourcepath);
     initialize_sprites(blokeadr_load, blokeadr, 77, blokeadr_load+blokelen);
-    int explolen = loadhammered_game(&exploadr_load, explopath, resourcepath);
+    int explolen = load_data(&exploadr_load, explopath, resourcepath);
     initialize_sprites(exploadr_load, exploadr, 32, exploadr_load+explolen);
 }
 
@@ -562,10 +562,10 @@ void getlevelsprites()
     case 4: currentpath = psychepath /*XXX*/; break;
     default: currentpath = egopath;
     }
-    int blocklen = loadhammered_level(&blockadr_load, blockpath, currentpath);
+    int blocklen = load_data(&blockadr_load, blockpath, currentpath);
     initialize_sprites(blockadr_load, blockadr, 256, blockadr_load+blocklen);
 
-    int alienlen = loadhammered_level(&alienadr_load, alienpath, currentpath);
+    int alienlen = load_data(&alienadr_load, alienpath, currentpath);
     initialize_sprites(alienadr_load, alspradr, 256, alienadr_load+alienlen);
 }
 
@@ -581,13 +581,13 @@ int getlevelfiles()
     }
     getlevelsprites();
 
-    loadhammered_level((char**)&brainadr, boardpath, currentpath);
+    load_data((char**)&brainadr, boardpath, currentpath);
     boardadr = brainadr;
 // hack: fix endianness
     boardadr->width = read_littleendian((uint32_t*)&boardadr->width);
     boardadr->height = read_littleendian((uint32_t*)&boardadr->height);
 
-    loadhammered_level(&backadr, backpath, currentpath);
+    load_data(&backadr, backpath, currentpath);
 
     char* r1;
     switch (options.mentalzone)
@@ -613,7 +613,7 @@ int retrievebackdrop()
 {
     char* r9 = currentpath;
 
-    loadhammered_level(&backadr, backpath, currentpath);
+    load_data(&backadr, backpath, currentpath);
     return 0;
 }
 
@@ -621,14 +621,14 @@ int getneuronfiles(int plzone)
 {
 
 //STR R10,[R12,#backadr]
-    loadhammered_level(&backadr, neuronbackpath, currentpath);
+    load_data(&backadr, neuronbackpath, currentpath);
     while (1)
     {
         *neuronnumber = '0'+plzone;
         if (filelength(neuronpath, currentpath)) break;
         if (--plzone == 0) return 0;
     }
-    loadhammered_level((char**)&neuronadr, neuronpath, currentpath);
+    load_data((char**)&neuronadr, neuronpath, currentpath);
     boardadr = neuronadr;
 // hack: fix endianness
     boardadr->width = read_littleendian((uint32_t*)&boardadr->width);

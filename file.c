@@ -118,30 +118,23 @@ void write_littleendian(uint8_t* bytes, uint32_t word)
     bytes[3] = (word>>24) & 0xff;
 }
 
-int loadhammered_game(char** spaceptr, char* r1, char* path)
+int load_data(char** spaceptr, char* filename, char* path)
 {
-    int reload;
-    do
-    {
-        reload = loadhammered(spaceptr, r1, path);
-        if (reload == -1)
-        {
-            badload(); return 0;
-        }
-    }
-    while (reload == 1);
-    return reload;
-}
+    int reload = 0;
+    char fullname[240];
+    int length;
 
-int loadhammered_level(char** spaceptr, char* r1, char* path)
-{
-    int reload;
+    snprintf(fullname, sizeof(fullname), "%s%s", path, filename);
     do
     {
-        reload = loadhammered(spaceptr, r1, path);
-        if (reload == -1) reload = badlevelload();
-    }
-    while (reload == 1);
+        length = get_file_length(fullname);
+        *spaceptr = (char *)malloc(length);
+        if (read_file(fullname, *spaceptr, *spaceptr + length))
+        {
+            reload = badlevelload();
+        }
+    } while(reload == 1);
+
     return reload;
 }
 
@@ -157,28 +150,6 @@ int loadvitalfile(char** spaceptr, char* r1, char* path)
     *spaceptr = (char*)malloc(r4);
     if (read_file(fullname, *spaceptr, (*spaceptr) + r4)) fatalfile();
     return r4;
-}
-
-int loadhammered(char** spaceptr, char* r1, char* path)
-{
-    int r3 = swi_blitz_hammerop(0, r1, path, NULL);
-
-    if (r3 == -1)
-    {
-        filenotthere(); return -1;
-    }
-    if (r3 == 0) return loadfile(spaceptr, r1, path);
-    *spaceptr = (char*)malloc(r3);
-    if (*spaceptr == NULL)
-    {
-        nomemory(); return 1;
-    }
-    int k;
-    if ((k = swi_blitz_hammerop(1, r1, path, *spaceptr)) < 0)
-    {
-        printf("Error %i\n", -k); filesyserror(); return 1;
-    }
-    return k;
 }
 
 int loadfile(char** spaceptr, char* r1, char* path)
@@ -317,135 +288,45 @@ int filelength(const char* name, const char* path)
 
 static int write_file(const char* path, char* start, char* end)
 {
-	FILE *f;
+    FILE *f;
 
-	f = fopen(path, "wb");
-	for (char* i = start; i < end; i++) fputc(*i, f);
-	fclose(f);
-	return 0;
+    f = fopen(path, "wb");
+    for (char* i = start; i < end; i++) fputc(*i, f);
+    fclose(f);
+    return 0;
 }
 
 static int does_file_exist(const char* path)
 {
-	FILE *f;
+    FILE *f;
 
-	f = fopen(path, "rb");
-	if (f == NULL) return 0;
-	fclose(f);
-	return 1;
+    f = fopen(path, "rb");
+    if (f == NULL) return 0;
+    fclose(f);
+    return 1;
 }
 
 static int get_file_length(const char* path)
 {
-	FILE *f;
-	int x;
+    FILE *f;
+    int x;
 
-	f = fopen(path, "rb");
-	if (f == NULL) return -1;
-	fseek(f, 0, SEEK_END);
-	x = ftell(f);
-	fclose(f);
-	return x;
+    f = fopen(path, "rb");
+    if (f == NULL) return -1;
+    fseek(f, 0, SEEK_END);
+    x = ftell(f);
+    fclose(f);
+    return x;
 }
 
 static int read_file(const char* path, char* start, char* end)
 {
-	FILE *f;
+    FILE *f;
 
-	f = fopen(path, "rb");
-	if (f == NULL) return -1;
-	for (char* i = start; i < end && !feof(f); i++) *i = fgetc(f);
-	fclose(f);
-	return 0;
-}
-
-int swi_blitz_hammerop(int op, char* name, char* path, char* space)
-{
-    char fullname[240] = "";
-
-    strcat(fullname, path);
-    strcat(fullname, name);
-    FILE* f = fopen(fullname, "rb");
-    if (f == NULL) return -1; // file does not exist
-    if ((getc(f) != 'H') || (getc(f) != 'm') || (getc(f) != 'r'))
-    {
-        fclose(f); return op;
-    }                            // file is not Hammered
-
-    if (op == 0) return 0x24000; // hack: should return length
-    char a[524288];
-    int p = 0;
-    char c;
-    int fmt = getc(f);
-    int len = 0;
-    for (int i = 0; i < 4; i++) len = ((len>>8)&0xffffff)|((getc(f)<<24)&0xff000000);
-
-    while (!feof(f))
-    {
-        c = getc(f);
-        if (c == 0xff) break; // end flag
-        else if (c < 0x10)
-        {
-            // type 1
-            int n = (c == 15) ? 256 : c+2;
-            char d = getc(f);
-            for (int i = 0; i < n; i++) a[p++] = d;
-        }
-        else if (c < 0x20)
-        {
-            // type 2
-            int n = (c&0xf)+1;
-            for (int i = 0; i < n; i++) a[p++] = getc(f);
-        }
-        else if (c < 0x40)
-        {
-            // type 3
-            char d = getc(f);
-            int P = p-1-((c&3)<<8)-d;
-            if (P < 0)
-            {
-                fclose(f); return -3;
-            }
-            int n = ((c&0x1c)>>2)+2;
-            for (int i = 0; i < n; i++) a[p++] = a[P--];
-        }
-        else if (c < 0x80)
-        {
-            // type 4
-            char d = getc(f);
-            int D = 1<<(((c&4) ? ((c&6)+2) : (c&6))>>1);
-            int P = p-1-((c&1)<<8)-d;
-            if (P < 0)
-            {
-                fclose(f); return -4;
-            }
-            int n = ((c&0x38)>>3)+2;
-            for (int i = 0; i < n; i++) a[p++] = a[P+(i*D)/4];
-        }
-        else
-        {
-            // type 5
-            char d = getc(f);
-            int P = p-1-((c&7)<<8)-d;
-            if (P < 0)
-            {
-                fclose(f); return -5;
-            }
-            int n = ((c&0x78)>>3)+2;
-            for (int i = 0; i < n; i++) a[p++] = a[P++];
-        }
-    }
-
-    if (fmt != 0)
-    {
-        int wlen = (len+3)>>2;
-        for (int i = 0; i < p; i++)
-            space[i] = a[(i%4)*wlen+(i>>2)];
-    }
-    else
-        for (int i = 0; i < p; i++)
-            space[i] = a[i];
-
+    f = fopen(path, "rb");
+    if (f == NULL) return -1;
+    for (char* i = start; i < end && !feof(f); i++) *i = fgetc(f);
     fclose(f);
-    return p;
+    return 0;
 }
+
