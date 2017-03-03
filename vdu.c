@@ -938,6 +938,10 @@ int initialize_sprites(char* start, fastspr_sprite* sprites, int max_sprites, ch
 	}
 	else
 	{
+	    if (sprites[i].s != NULL)
+	    {
+	        SDL_FreeSurface(sprites[i].s);
+	    }
 	    sprites[i].s = SDL_CreateRGBSurface(SDL_HWSURFACE|SDL_SRCALPHA, wid, hei, 32,
 						0xff, 0xff00, 0xff0000, 0xff000000);
 	    SDL_LockSurface(sprites[i].s);
