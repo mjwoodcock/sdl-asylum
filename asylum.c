@@ -244,6 +244,7 @@ void setdefaults()
     options.soundquality = 1;
     options.soundvol = 0x7f;
     options.musicvol = 0x7f;
+    options.speaker = SPEAKER_ON;
     options.leftkey = keydefs[0];
     options.rightkey = keydefs[1];
     options.upkey = keydefs[2];
