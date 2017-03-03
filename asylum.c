@@ -611,8 +611,6 @@ int getlevelfiles()
 
 int retrievebackdrop()
 {
-    char* r9 = currentpath;
-
     load_data(&backadr, backpath, currentpath);
     return 0;
 }
