@@ -117,7 +117,7 @@ int options_menu(int gameon)
                 savegame();
             break;
 //case  4: if (savedornot==1) dosaveconf(); break;
-        default: soundupdate(); return 0;
+        default: return 0;
         }
     }
 }
@@ -268,7 +268,7 @@ static char sound7[] = "-7. Overdrive";
 void tunesound()
 {
     showchatscreen();
-    for (;; soundupdate(), swi_stasis_link(1, 1), swi_sound_control(1, -15, 0x20, 0xfe))
+    for (;; swi_stasis_link(1, 1), swi_sound_control(1, -15, 0x20, 0xfe))
     {
         wipetexttab();
         soundfillin();
