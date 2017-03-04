@@ -53,6 +53,7 @@ fastspr_sprite alspradr[256];
 int xpos, ypos;
 char plscore[8];
 asylum_options options;
+extern char sound_available;
 
 void init()
 {
@@ -386,6 +387,10 @@ int main(int argc, char** argv)
         dumpmusic(argc,argv);
         exit(0);
     }
+    else if ((argc > 2) & !strcmp(argv[1], "--nosound"))
+    {
+        sound_available = 0;
+    }
     
     open_scores();
     dropprivs();
@@ -394,7 +399,10 @@ int main(int argc, char** argv)
     SDL_WM_SetCaption("Asylum", "Asylum");
     SDL_EnableUNICODE(1);
 #ifndef _NO_SOUND
-    init_audio();
+    if (sound_available)
+    {
+        init_audio();
+    }
 #endif
     c_array_initializers();
     swi_stasis_control(8, 8);
@@ -435,9 +443,12 @@ int getfiles()
 {
     getvitalfiles();
     showloading();
-    init_sounds();
-    getmusicfiles();
-    swi_bodgemusic_start(1);
+    if (sound_available)
+    {
+        init_sounds();
+        getmusicfiles();
+        swi_bodgemusic_start(1);
+    }
     getgamefiles();
     return 0;
 }
