@@ -1628,7 +1628,7 @@ void wipealtab()
     //aladr = alofs;
     alent* r10 = aladr;
     alctr = 0;
-    for (int r9 = _alno; r9 >= 0; r9--)
+    for (int r9 = _alno; r9 > 0; r9--)
     {
         r10->type = 0;
         r10++;
