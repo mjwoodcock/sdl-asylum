@@ -94,14 +94,30 @@ void moval()
     alent* r11 = aladr;
     for (int r9 = _alno; r9 > 0; r9 -= 8)
     {
-        if (r11->type) procal(r11);r11++;
-        if (r11->type) procal(r11);r11++;
-        if (r11->type) procal(r11);r11++;
-        if (r11->type) procal(r11);r11++;
-        if (r11->type) procal(r11);r11++;
-        if (r11->type) procal(r11);r11++;
-        if (r11->type) procal(r11);r11++;
-        if (r11->type) procal(r11);r11++;
+        if (r11->type)
+            procal(r11);
+        r11++;
+        if (r11->type)
+            procal(r11);
+        r11++;
+        if (r11->type)
+            procal(r11);
+        r11++;
+        if (r11->type)
+            procal(r11);
+        r11++;
+        if (r11->type)
+            procal(r11);
+        r11++;
+        if (r11->type)
+            procal(r11);
+        r11++;
+        if (r11->type)
+            procal(r11);
+        r11++;
+        if (r11->type)
+            procal(r11);
+        r11++;
     }
     return;
 }
