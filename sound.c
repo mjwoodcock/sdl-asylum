@@ -126,8 +126,10 @@ Mix_Chunk* make_sound(char samp, int initpitch, int volslide, int pitchslide, ch
             uint32_t rep = read_littleendian(((uint32_t*)voice[samp])+8);
 	    double w;
             if (jj >= len)
+            {
                 if (rep == 0) continue;
                 else jj = (len-rep)+((jj-len)%rep);
+            }
             if (jj >= len-gap)
                 w = ((jj-(len-gap))*(double)mulaw[voice[samp][jj+44-rep]]
                      +(len-jj)*(double)mulaw[voice[samp][jj+44]])/gap/4;
