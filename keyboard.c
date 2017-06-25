@@ -95,7 +95,7 @@ char swi_oscrc(int w, char* start, char* end, int bytes)
 
 int swi_joystick_read(int a, int* x, int* y)
 {
-    ;
+    return -1;
 }
 
 void update_keyboard()
