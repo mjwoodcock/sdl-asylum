@@ -148,13 +148,12 @@ void projsplit(projent* r11)
     int flags = r11->flags;
     int* r10;
     int r9;
+    int r4, r6;
 
     if (flags&PROJ_ROCKET)
     {
         rocketsplit(r11); return;
     }
-
-    int r7 = r11->type, r4, r6;
 
     if (flags&PROJ_FIVEWAY)
     {
