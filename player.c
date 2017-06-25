@@ -42,7 +42,7 @@ static char falling;
 static char plframe, plface;
 static char plfired, plweapontype, plweaponspeed;
 static char pluphit, firerate;
-static char rocketflag, electrocuting, platuphit;
+static char rocketflag, electrocuting;
 static char blamctr, rocketblamctr, plotterofs, hiddenplatctr, extending;
 static char bonusctr;
 static int16_t bonusreplot;
