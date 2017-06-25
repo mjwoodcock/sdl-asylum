@@ -1260,7 +1260,7 @@ void showlives()
 void scorezero()
 {
     plscoreadd = 0;
-    *(uint64_t*)plscore = 0;
+    memset(plscore, 0, sizeof(plscore));
     lives = 2;
     neuronctr = 0;
 }
