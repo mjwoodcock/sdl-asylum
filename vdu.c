@@ -839,6 +839,17 @@ void swi_blitz_wait(int d)
     SDL_Delay(d*10);
 }
 
+void swi_next_frame(int d)
+{
+	static int time = SDL_GetTicks();
+	int now = SDL_GetTicks();
+	time += d;
+	if (time > now)
+		SDL_Delay(time - now);
+	else
+		time = now;
+}
+
 void swi_fastspr_clearwindow()
 {
     if (vduvar.opengl)

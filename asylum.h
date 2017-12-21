@@ -493,6 +493,7 @@ FILE* find_game(int op);
 FILE* find_config(int op);
 int swi_joystick_read(int a, int* x, int* y);
 void swi_blitz_wait(int d);
+void swi_next_frame(int d);
 void swi_blitz_screenflush();
 void swi_fastspr_clearwindow();
 void swi_fastspr_setclipwindow(int x1, int y1, int x2, int y2);
