@@ -89,7 +89,7 @@
 const int fullpitch = 0x2155;
 
 typedef struct fastspr_sprite { int x; int y; int w; int h; GLuint t;
-                                int texw; int texh; SDL_Surface* s; } fastspr_sprite;
+                                float texw; float texh; SDL_Surface* s; } fastspr_sprite;
 
 typedef struct board { int first_int; int width; int height;
                        int fourth; int fifth; int sixth; int seventh; int eighth;
