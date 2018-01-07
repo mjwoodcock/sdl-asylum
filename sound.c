@@ -22,7 +22,7 @@
 
 extern asylum_options options;
 
-char sound_available;
+char sound_available = 1;
 
 void bidforsoundforce(int r0, char r1, char r2, int r3, int r4, int r5, char r6, int r7, Mix_Chunk* chunk)
 {
