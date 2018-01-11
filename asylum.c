@@ -176,7 +176,6 @@ int game()
                 scorewipe();
                 plotscore();
                 frameinc = ((options.gearchange == 0) ? 2 : 1);
-                swi_blitz_wait(frameinc);
                 if ((rate50 != 1) && (frameinc < 2)) //rate 25 but one frame passed
                 {
                     swi_blitz_wait(1);
@@ -184,6 +183,7 @@ int game()
                     rate50 = 1;
                 }
                 else if (frameinc > 1) rate50 = 0;
+		swi_next_frame(20);
 
                 framectr += frameinc;
 

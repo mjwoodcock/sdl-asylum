@@ -89,7 +89,7 @@
 const int fullpitch = 0x2155;
 
 typedef struct fastspr_sprite { int x; int y; int w; int h; GLuint t;
-                                int texw; int texh; SDL_Surface* s; } fastspr_sprite;
+                                float texw; float texh; SDL_Surface* s; } fastspr_sprite;
 
 typedef struct board { int first_int; int width; int height;
                        int fourth; int fifth; int sixth; int seventh; int eighth;
@@ -493,6 +493,7 @@ FILE* find_game(int op);
 FILE* find_config(int op);
 int swi_joystick_read(int a, int* x, int* y);
 void swi_blitz_wait(int d);
+void swi_next_frame(int d);
 void swi_blitz_screenflush();
 void swi_fastspr_clearwindow();
 void swi_fastspr_setclipwindow(int x1, int y1, int x2, int y2);

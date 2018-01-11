@@ -93,19 +93,20 @@ void fspplotscaled(fastspr_sprite* sprites, char n, float x, float y,
 	// This rescales as requested ...
 	if ((sprite.w==0) || (sprite.h==0)) return;
 	glBindTexture(GL_TEXTURE_2D, sprite.t);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glColor4f(1,1,1,1);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBegin(GL_TRIANGLE_STRIP);
-	glTexCoord2f(0.5/sprite.texw, 0.5/sprite.texh);
-	glVertex3f(posx-0.5*xs, posy-0.5*ys, 0.0);
-	glTexCoord2f((sprite.w+1.5)/sprite.texw, 0.5/sprite.texh);
-	glVertex3f(posx+w+0.5*xs, posy-0.5*ys, 0.0);
-	glTexCoord2f(0.5/sprite.texh, (sprite.h+1.5)/sprite.texh);
-	glVertex3f(posx-0.5*xs, posy+h+0.5*ys, 0.0);
-	glTexCoord2f((sprite.w+1.5)/sprite.texw, (sprite.h+1.5)/sprite.texh);
-	glVertex3f(posx+w+0.5*xs, posy+h+0.5*ys, 0.0);
+	glTexCoord2f(0.0, 0.0);
+	glVertex3f(posx, posy, 0.0);
+	glTexCoord2f(sprite.w/sprite.texw, 0.0);
+	glVertex3f(posx+w, posy, 0.0);
+	glTexCoord2f(0.0, sprite.h/sprite.texh);
+	glVertex3f(posx, posy+h, 0.0);
+	glTexCoord2f(sprite.w/sprite.texw, sprite.h/sprite.texh);
+	glVertex3f(posx+w, posy+h, 0.0);
 	glEnd();
     }
     else
@@ -732,16 +733,15 @@ void decomp(fastspr_sprite* DecompScreen, char* r11)
     DecompScreen->texw = (vduvar.width*8)/5; DecompScreen->texh = vduvar.height*2;
     if (vduvar.opengl)
     {
-        DecompScreen->x = -1;  DecompScreen->y = -1;
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, 512, 512,
 			  GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, (char*)data);
         free(data);
     }
     else
     {
-	DecompScreen->x = 0;  DecompScreen->y = 0;
 	SDL_UnlockSurface(DecompScreen->s);
     }
+    DecompScreen->x = 0;  DecompScreen->y = 0;
 }
 
 void vduread(asylum_options options)
@@ -760,12 +760,12 @@ void vduread(asylum_options options)
     vduvar.strengthw = (_strengthmax>>8); vduvar.strengthh = 6;
     vduvar.bonusx = 290; vduvar.bonusy = 232; vduvar.bonush = 20;
     vduvar.sprw = (16*8)/viewsize; vduvar.sprh = (16*8)/viewsize;
-    SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 4 );
-    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-    ArcScreen = SDL_SetVideoMode( vduvar.xreso, vduvar.yreso, 24 /*bpp*/,
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    ArcScreen = SDL_SetVideoMode( vduvar.xreso, vduvar.yreso, 32 /*bpp*/,
                                   (options.opengl ? SDL_OPENGL : 0) |
 				  (options.fullscreen ? SDL_FULLSCREEN : 0));
     if (ArcScreen == NULL)
@@ -837,6 +837,17 @@ void endgamemessage()
 void swi_blitz_wait(int d)
 {
     SDL_Delay(d*10);
+}
+
+void swi_next_frame(int d)
+{
+	static int time = SDL_GetTicks();
+	int now = SDL_GetTicks();
+	time += d;
+	if (time > now)
+		SDL_Delay(time - now);
+	else
+		time = now;
 }
 
 void swi_fastspr_clearwindow()
@@ -953,28 +964,13 @@ int initialize_sprites(char* start, fastspr_sprite* sprites, int max_sprites, ch
             int x = ((0x0fffff00&read_littleendian(q))>>8)%320;
             int y = ((0x0fffff00&read_littleendian(q))>>8)/320;
             if ((y*wid+x < 0) || (y*wid+x >= wid*hei)) printf("%i: x=%i y=%i wid=%i hei=%i: bad idea\n", i, x, y, wid, hei);
-            else if (vduvar.opengl) data[(y+1)*256/*wid*/+(x+1)] = palette[0xff&read_littleendian(q)];
+            else if (vduvar.opengl) data[y*256+x] = palette[0xff&read_littleendian(q)];
             else data[y*wid+x] = palette[0xff&read_littleendian(q)];
         }
 	if (vduvar.opengl)
 	{
-	    //uint32_t neighbours = maze_neighbours[i];
-	    for (int y=1; y<=hei; y++)
-	    {
-		data[y*256] = data[y*256+1]&0xffffff;
-		data[y*256+wid+1] = data[y*256+wid]&0xffffff;
-		/*data[y*256] = alldata[(neighbours&0xff0000)>>16][y*256+wid];
-		  data[y*256+wid+1] = alldata[(neighbours&0xff00)>>8][y*256+1];*/
-	    }
-	    for (int x=0; x<=wid+1; x++)
-	    {
-		data[x] = data[x+256]&0xffffff;
-		data[x+hei*256+256] = data[x+hei*256]&0xffffff;
-		/*data[x] = alldata[(neighbours&0xff000000)>>24][x+hei*256];
-		  data[x+hei*256+256] = alldata[(neighbours&0xff)][x+256];*/
-	    }
 	    //Without this line I don't get textures unless I use gluBuild2DMipmaps
-	    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST); 
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0,
 			 GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, (char*)data);
 	    free(data);
