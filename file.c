@@ -23,8 +23,6 @@
 #include "asylum.h"
 #include "file.h"
 
-static int get_file_length(const char* path);
-
 static char resource_path[PATH_MAX];
 static char score_path[PATH_MAX];
 
