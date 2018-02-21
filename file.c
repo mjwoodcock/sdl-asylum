@@ -44,9 +44,9 @@ FILE* find_game(int op)
 
     char* home = getenv("HOME");
     if (home)
-	strcat(fullname, home);
+        strcat(fullname, home);
     else
-	return NULL;
+        return NULL;
     strcat(fullname, savegamename);
     switch (op)
     {
@@ -55,7 +55,7 @@ FILE* find_game(int op)
     case FIND_DATA_READ_WRITE:
         return fopen(fullname, "wb");
     default:
-	return NULL;
+        return NULL;
     }
 }
 
@@ -65,9 +65,9 @@ FILE* find_config(int op)
 
     char* home = getenv("HOME");
     if (home)
-	strcat(fullname, home);
+        strcat(fullname, home);
     else
-	strcat(fullname, resource_path);
+        strcat(fullname, resource_path);
     strcat(fullname, configname);
     switch (op)
     {
@@ -118,31 +118,31 @@ void write_littleendian(uint8_t* bytes, uint32_t word)
 
 int loadfile(char** spaceptr, char* filename, char* path)
 {
-	char fullname[PATH_MAX];
-	char *buffer;
-	int length;
-	snprintf(fullname, sizeof(fullname), "%s%s", path, filename);
-	FILE *f = fopen(fullname, "rb");
-	if (!f)
-		goto fullfail;
-	fseek(f, 0, SEEK_END);
-	length = ftell(f);
-	rewind(f);
-	buffer = (char *)malloc(length);
-	if (!buffer)
-		goto failf;
-	if (fread(buffer, length, 1, f) != 1)
-		goto failbuf;
-	fclose(f);
-	*spaceptr = buffer;
-	return length;
+    char fullname[PATH_MAX];
+    char *buffer;
+    int length;
+    snprintf(fullname, sizeof(fullname), "%s%s", path, filename);
+    FILE *f = fopen(fullname, "rb");
+    if (!f)
+        goto fullfail;
+    fseek(f, 0, SEEK_END);
+    length = ftell(f);
+    rewind(f);
+    buffer = (char *)malloc(length);
+    if (!buffer)
+        goto failf;
+    if (fread(buffer, length, 1, f) != 1)
+        goto failbuf;
+    fclose(f);
+    *spaceptr = buffer;
+    return length;
 failbuf:
-	free(buffer);
+    free(buffer);
 failf:
-	fclose(f);
+    fclose(f);
 fullfail:
-	printf("Can't load file %s\n", fullname);
-	exit(EXIT_FAILURE);
+    printf("Can't load file %s\n", fullname);
+    exit(EXIT_FAILURE);
 }
 
 void set_paths()
