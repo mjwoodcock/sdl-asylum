@@ -116,7 +116,7 @@ void write_littleendian(uint8_t* bytes, uint32_t word)
     bytes[3] = (word>>24) & 0xff;
 }
 
-int load_data(char** spaceptr, char* filename, char* path)
+int loadfile(char** spaceptr, char* filename, char* path)
 {
 	char fullname[PATH_MAX];
 	char *buffer;
@@ -143,16 +143,6 @@ failf:
 fullfail:
 	printf("Can't load file %s\n", fullname);
 	exit(EXIT_FAILURE);
-}
-
-int loadvitalfile(char** spaceptr, char* r1, char* path)
-{
-	return load_data(spaceptr, r1, path);
-}
-
-int loadfile(char** spaceptr, char* r1, char* path)
-{
-	return load_data(spaceptr, r1, path);
 }
 
 void set_paths()

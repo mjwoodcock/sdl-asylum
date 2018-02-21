@@ -407,8 +407,6 @@ void getlevelsprites();
 int getlevelfiles();
 int retrievebackdrop();
 int getneuronfiles(int plzone);
-int loadvitalfile(char** spaceptr,char* r1, char* path);
-int loadfile(char** r1, char* path, char* name);
 void find_resources();
 void open_scores();
 void savescores(char* highscorearea, int mentalzone);
