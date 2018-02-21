@@ -419,7 +419,6 @@ void filesyserror();
 void badload();
 int badlevelload();
 void nomemory();
-int filelength(const char* name, const char* path);
 void showerror();
 void showerrorok();
 int errorwait();

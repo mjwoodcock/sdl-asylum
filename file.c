@@ -239,29 +239,3 @@ void loadscores(char* highscorearea, int mentalzone)
     }
     setdefaultscores();
 }
-
-int filelength(const char* name, const char* path)
-{
-    char fullname[PATH_MAX] = "";
-
-    snprintf(fullname, sizeof(fullname), "%s%s", path, name);
-    int r4 = get_file_length(fullname);
-    if (r4 == -1)
-    {
-        filesyserror(); return 0;
-    }
-    return r4;
-}
-
-static int get_file_length(const char* path)
-{
-    FILE *f;
-    int x;
-
-    f = fopen(path, "rb");
-    if (f == NULL) return -1;
-    fseek(f, 0, SEEK_END);
-    x = ftell(f);
-    fclose(f);
-    return x;
-}

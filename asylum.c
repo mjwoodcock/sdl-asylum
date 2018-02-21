@@ -550,12 +550,7 @@ int retrievebackdrop()
 int getneuronfiles(int plzone)
 {
     loadfile(&backadr, neuronbackpath, currentpath);
-    while (1)
-    {
-        *neuronnumber = '0'+plzone;
-        if (filelength(neuronpath, currentpath)) break;
-        if (--plzone == 0) return 0;
-    }
+    *neuronnumber = '0' + plzone;
     loadfile((char**)&neuronadr, neuronpath, currentpath);
     boardadr = neuronadr;
 // hack: fix endianness
