@@ -23,7 +23,6 @@
 #include "asylum.h"
 #include "file.h"
 
-static int read_file(const char* path, char* start, char* end);
 static int get_file_length(const char* path);
 
 static char resource_path[PATH_MAX];
@@ -119,62 +118,41 @@ void write_littleendian(uint8_t* bytes, uint32_t word)
 
 int load_data(char** spaceptr, char* filename, char* path)
 {
-    int reload = 0;
-    char fullname[PATH_MAX];
-    int length;
-
-    snprintf(fullname, sizeof(fullname), "%s%s", path, filename);
-    do
-    {
-        length = get_file_length(fullname);
-        *spaceptr = (char *)malloc(length);
-        if (read_file(fullname, *spaceptr, *spaceptr + length))
-        {
-            reload = badlevelload();
-        }
-    } while(reload == 1);
-
-    return reload;
+	char fullname[PATH_MAX];
+	char *buffer;
+	int length;
+	snprintf(fullname, sizeof(fullname), "%s%s", path, filename);
+	FILE *f = fopen(fullname, "rb");
+	if (!f)
+		goto fullfail;
+	fseek(f, 0, SEEK_END);
+	length = ftell(f);
+	rewind(f);
+	buffer = (char *)malloc(length);
+	if (!buffer)
+		goto failf;
+	if (fread(buffer, length, 1, f) != 1)
+		goto failbuf;
+	fclose(f);
+	*spaceptr = buffer;
+	return length;
+failbuf:
+	free(buffer);
+failf:
+	fclose(f);
+fullfail:
+	printf("Can't load file %s\n", fullname);
+	exit(EXIT_FAILURE);
 }
 
 int loadvitalfile(char** spaceptr, char* r1, char* path)
 {
-// if VS or if r0==1
-    char fullname[PATH_MAX] = "";
-
-    strcat(fullname, path);
-    strcat(fullname, r1);
-    int r4 = get_file_length(fullname);
-    if (r4 <= 0) fatalfile();
-    *spaceptr = (char*)malloc(r4);
-    if (read_file(fullname, *spaceptr, (*spaceptr) + r4)) fatalfile();
-    return r4;
+	return load_data(spaceptr, r1, path);
 }
 
 int loadfile(char** spaceptr, char* r1, char* path)
 {
-    int r4;
-    char fullname[PATH_MAX] = "";
-
-    snprintf(fullname, sizeof(fullname), "%s%s", path, r1);
-    r4 = get_file_length(fullname);
-
-    // hack: +4 as feof doesn't trigger until we've passed the end
-    *spaceptr = (char*)malloc(r4+4);
-
-    if (r4 == -1)
-    {
-        filenotthere(); return 1;
-    }
-    if (*spaceptr == NULL)
-    {
-        nomemory(); return 1;
-    }
-    if (read_file(fullname, *spaceptr, (*spaceptr) + r4 + 4))
-    {
-        filesyserror(); return 1;
-    }
-    return r4;
+	return load_data(spaceptr, r1, path);
 }
 
 void set_paths()
@@ -297,15 +275,3 @@ static int get_file_length(const char* path)
     fclose(f);
     return x;
 }
-
-static int read_file(const char* path, char* start, char* end)
-{
-    FILE *f;
-
-    f = fopen(path, "rb");
-    if (f == NULL) return -1;
-    for (char* i = start; i < end && !feof(f); i++) *i = fgetc(f);
-    fclose(f);
-    return 0;
-}
-
