@@ -457,8 +457,8 @@ void getvitalfiles()
 {
     charsok = 0;
     char *chatscreenadr, *charsadr_load;
-    loadvitalfile(&chatscreenadr, chatscreenpath, resourcepath);
-    int charslen = loadvitalfile(&charsadr_load, charpath, resourcepath);
+    loadfile(&chatscreenadr, chatscreenpath, resourcepath);
+    int charslen = loadfile(&charsadr_load, charpath, resourcepath);
     initialize_sprites(charsadr_load, charsadr, 48, charsadr_load+charslen);
     initialize_chatscreen(chatscreenadr);
     charsok = 1;
@@ -476,11 +476,11 @@ void getgamefiles()
 {
     char *gamescreenadr, *blokeadr_load, *exploadr_load;
 
-    load_data(&gamescreenadr, gamescreenpath, resourcepath);
+    loadfile(&gamescreenadr, gamescreenpath, resourcepath);
     initialize_gamescreen(gamescreenadr);
-    int blokelen = load_data(&blokeadr_load, blokepath, resourcepath);
+    int blokelen = loadfile(&blokeadr_load, blokepath, resourcepath);
     initialize_sprites(blokeadr_load, blokeadr, 77, blokeadr_load+blokelen);
-    int explolen = load_data(&exploadr_load, explopath, resourcepath);
+    int explolen = loadfile(&exploadr_load, explopath, resourcepath);
     initialize_sprites(exploadr_load, exploadr, 32, exploadr_load+explolen);
 }
 
@@ -494,10 +494,10 @@ void getlevelsprites()
     case 4: currentpath = psychepath /*XXX*/; break;
     default: currentpath = egopath;
     }
-    int blocklen = load_data(&blockadr_load, blockpath, currentpath);
+    int blocklen = loadfile(&blockadr_load, blockpath, currentpath);
     initialize_sprites(blockadr_load, blockadr, 256, blockadr_load+blocklen);
 
-    int alienlen = load_data(&alienadr_load, alienpath, currentpath);
+    int alienlen = loadfile(&alienadr_load, alienpath, currentpath);
     initialize_sprites(alienadr_load, alspradr, 256, alienadr_load+alienlen);
 }
 
@@ -513,13 +513,13 @@ int getlevelfiles()
     }
     getlevelsprites();
 
-    load_data((char**)&brainadr, boardpath, currentpath);
+    loadfile((char**)&brainadr, boardpath, currentpath);
     boardadr = brainadr;
 // hack: fix endianness
     boardadr->width = read_littleendian((uint32_t*)&boardadr->width);
     boardadr->height = read_littleendian((uint32_t*)&boardadr->height);
 
-    load_data(&backadr, backpath, currentpath);
+    loadfile(&backadr, backpath, currentpath);
 
     char* r1;
     switch (options.mentalzone)
@@ -543,20 +543,15 @@ int getlevelfiles()
 
 int retrievebackdrop()
 {
-    load_data(&backadr, backpath, currentpath);
+    loadfile(&backadr, backpath, currentpath);
     return 0;
 }
 
 int getneuronfiles(int plzone)
 {
-    load_data(&backadr, neuronbackpath, currentpath);
-    while (1)
-    {
-        *neuronnumber = '0'+plzone;
-        if (filelength(neuronpath, currentpath)) break;
-        if (--plzone == 0) return 0;
-    }
-    load_data((char**)&neuronadr, neuronpath, currentpath);
+    loadfile(&backadr, neuronbackpath, currentpath);
+    *neuronnumber = '0' + plzone;
+    loadfile((char**)&neuronadr, neuronpath, currentpath);
     boardadr = neuronadr;
 // hack: fix endianness
     boardadr->width = read_littleendian((uint32_t*)&boardadr->width);

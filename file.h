@@ -5,7 +5,7 @@
 #define FIND_DATA_READ_WRITE	0x80
 #define FIND_DATA_APPEND	0xC0
 
-int load_data(char** spaceptr, char* filename, char* path);
+int loadfile(char** spaceptr, char* filename, char* path);
 
 #endif
 
